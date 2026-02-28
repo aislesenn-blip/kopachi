@@ -152,7 +152,7 @@
                 tagline: "Don't Visit. Just Live.", location: "Kirua, Kilimanjaro", price: "$120/night",
                 cover: "./KIRUA/3K6D5655.JPG",
                 gallery: ["./KIRUA/3K6D5655.JPG", "./KIRUA/3K6D5582.JPG", "./KIRUA/3K6D5585.JPG", "./KIRUA/3K6D5588.JPG", "./KIRUA/3K6D5597.JPG"],
-                features: ["Mt. Kilimanjaro View", "Organic Garden", "Fast WiFi", "Private Kitchen", "Community Access"],
+                features: ["Mt. Kilimanjaro View", "Organic Garden", "Seamless Connectivity", "Private Kitchen", "Community Access"],
                 desc: "The Kirua Homestead",
                 fullGallery: [
                     "./KIRUA/3K6D5582.JPG", "./KIRUA/3K6D5585.JPG", "./KIRUA/3K6D5588.JPG",
@@ -358,7 +358,7 @@
                         <div className="max-w-2xl reveal-on-scroll">
                             <h2 className="text-3xl md:text-5xl font-serif text-brand-dark mb-10 leading-tight">The Space</h2>
                             <p className="text-xl md:text-2xl text-gray-600 leading-relaxed font-light">
-                                "A Sanctuary for the Soul and the Senses. Designed for those who seek deep connection or a quiet space to create. The homestead blends traditional Chagga warmth with modern digital-nomad essentials, including high-speed Starlink internet and a private kitchen. Step outside to harvest your own organic vegetables or simply bask in the uninterrupted views of the summit."
+                                "A Sanctuary for the Soul and the Senses. Designed for those who seek deep connection or a quiet space to create. The homestead blends traditional Chagga warmth with modern comforts, including seamless connectivity for the modern nomad and a private kitchen. Step outside to harvest your own organic vegetables or simply bask in the uninterrupted views of the summit."
                             </p>
                         </div>
                     </div>
@@ -387,7 +387,7 @@
                         {/* STICKY CARD */}
                         <div className="lg:sticky lg:top-12 bg-white p-12 rounded-sm shadow-2xl border border-gray-100 max-w-md mx-auto w-full">
                             <h3 className="text-4xl font-serif text-brand-dark mb-4">Don't Visit. Just Live.</h3>
-                            <p className="text-gray-500 mb-10 text-lg">Secure your stay in the Kirua Homestead. Traditional Chagga warmth meets digital-nomad essentials.</p>
+                            <p className="text-gray-500 mb-10 text-lg">Secure your stay in the Kirua Homestead. Traditional Chagga warmth meets subtle, modern comforts.</p>
                             <button onClick={() => onBook(data)} className="w-full bg-brand-dark text-white py-6 font-serif text-xl tracking-wider hover:bg-brand-gold hover:text-black transition-colors shadow-lg flex justify-center items-center gap-3">
                                 Check Availability <i data-lucide="arrow-right" className="w-6 h-6"></i>
                             </button>
@@ -470,7 +470,7 @@
                         <div className="max-w-2xl reveal-on-scroll">
                             <h2 className="text-3xl md:text-5xl font-serif text-brand-dark mb-10 leading-tight">The Space</h2>
                             <p className="text-xl md:text-2xl text-gray-600 leading-relaxed font-light">
-                                "Modern Comfort, Rooted in Nature. We built this sanctuary to be your private haven. Expansive living spaces blend seamlessly with the lush, green outdoors. Whether you are working remotely or unwinding after a trek, enjoy uninterrupted peace of mind with our dedicated power generator and premium amenities. It is a home that anticipates your needs while keeping you grounded in the earth."
+                                "Modern Comfort, Rooted in Nature. We built this sanctuary to be your private haven. Expansive living spaces blend seamlessly with the lush, green outdoors. Whether you are seeking quiet focus or unwinding after a trek, enjoy uninterrupted peace of mind with our subtle, modern comforts. It is a home that anticipates your needs while keeping you grounded in the earth."
                             </p>
                         </div>
                     </div>
@@ -500,7 +500,7 @@
                         {/* STICKY CARD */}
                         <div className="lg:sticky lg:top-12 bg-white p-12 rounded-sm shadow-2xl border border-gray-100 max-w-md mx-auto w-full">
                             <h3 className="text-4xl font-serif text-brand-dark mb-4">Live the Legacy</h3>
-                            <p className="text-gray-500 mb-10 text-lg">Secure your sanctuary on the slopes of Kilimanjaro. Dedicated power, premium amenities, authentic living.</p>
+                            <p className="text-gray-500 mb-10 text-lg">Secure your sanctuary on the slopes of Kilimanjaro. Uninterrupted tranquility, refined comforts, authentic living.</p>
                             <button onClick={() => onBook(data)} className="w-full bg-brand-dark text-white py-6 font-serif text-xl tracking-wider hover:bg-brand-gold hover:text-black transition-colors shadow-lg flex justify-center items-center gap-3">
                                 Reserve Now <i data-lucide="arrow-right" className="w-6 h-6"></i>
                             </button>
@@ -583,7 +583,49 @@
                                 </div>
                             </div>
 
-                            <div id="destinations" className="py-24 bg-brand-cream px-6">
+                            {/* THE NEIGHBOURHOOD SECTION */}
+                            <div className="bg-brand-cream py-24 px-6 relative overflow-hidden">
+                                <div className="container mx-auto">
+                                    <div className="text-center mb-16 max-w-3xl mx-auto">
+                                        <span className="text-brand-earth uppercase tracking-widest text-sm font-bold">Beyond the Walls</span>
+                                        <h2 className="text-4xl md:text-6xl font-serif text-brand-dark mt-4 mb-6 leading-tight">Tired of staying inside?<br />Step out into our backyard.</h2>
+                                        <p className="text-xl text-gray-600 font-light leading-relaxed">The sanctuary doesn't end at the doorstep. Our neighbourhood is a living, breathing canvas of lush rainforests, hidden waterfalls, and winding trails carved by centuries of Chagga history. Breathe the mountain air and lose yourself in the wild, serene beauty that surrounds us.</p>
+                                    </div>
+
+                                    {/* Full Width Hero/Parallax Image for Neighbourhood */}
+                                    <div className="w-full h-[60vh] md:h-[70vh] mb-16 rounded-2xl overflow-hidden relative shadow-2xl">
+                                        <div className="absolute inset-0 bg-fixed bg-center bg-cover" style={{ backgroundImage: "url('./NEIGHBOURHOOD/Exploring-Tanzanias-Hidden-Waterfalls-2.jpg')" }}></div>
+                                        {/* Fallback for mobile where bg-fixed might not work well, or just pure aesthetic choice - let's keep it simple with img to guarantee loading if bg-fixed fails */}
+                                        <img src="./NEIGHBOURHOOD/Exploring-Tanzanias-Hidden-Waterfalls-2.jpg" alt="Tanzania Hidden Waterfalls" className="w-full h-full object-cover hidden md:block opacity-0" />
+                                    </div>
+
+                                    {/* The Mix: Staggered Aesthetic Grid */}
+                                    <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+                                        <div className="break-inside-avoid relative group overflow-hidden rounded-xl shadow-md">
+                                            <SafeImage src="./NEIGHBOURHOOD/e7.jpg" alt="Local Hike" queryTerm="tanzania waterfall lush" className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
+                                        </div>
+                                        <div className="break-inside-avoid relative group overflow-hidden rounded-xl shadow-md">
+                                            <SafeImage src="https://images.unsplash.com/photo-placeholder-1" alt="Serene Forest" queryTerm="serene nature forest" className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
+                                        </div>
+                                        <div className="break-inside-avoid relative group overflow-hidden rounded-xl shadow-md">
+                                            <SafeImage src="./NEIGHBOURHOOD/images.jpeg" alt="Chagga Village Coffee" queryTerm="chagga village coffee" className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
+                                        </div>
+                                        <div className="break-inside-avoid relative group overflow-hidden rounded-xl shadow-md">
+                                            <SafeImage src="https://images.unsplash.com/photo-placeholder-2" alt="Lush Environment" queryTerm="tanzania lush rainforest" className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
+                                        </div>
+                                        <div className="break-inside-avoid relative group overflow-hidden rounded-xl shadow-md">
+                                            <SafeImage src="https://images.unsplash.com/photo-placeholder-3" alt="Tanzania Waterfall" queryTerm="tanzania waterfall" className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="destinations" className="py-24 bg-white px-6">
                                 <div className="container mx-auto">
                                     <h2 className="text-4xl font-serif text-brand-dark mb-12 text-center">Expeditions</h2>
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{destinations.map(dest => (<div key={dest.id} onClick={() => handleSelect(dest)} className="h-[500px] relative rounded-xl overflow-hidden cursor-pointer group"><SafeImage src={dest.cover} alt={dest.name} queryTerm={dest.query || dest.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" /><div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div><div className="absolute bottom-8 left-8 text-white"><h3 className="text-3xl font-serif">{dest.name}</h3><p className="text-brand-gold mt-2">{dest.tagline}</p></div></div>))}</div>
@@ -620,7 +662,7 @@
                                 <form className="space-y-4">
                                     <input type="text" placeholder="Your Name" className="w-full bg-gray-50 border-none p-4 rounded-lg" />
                                     <input type="email" placeholder="Email Address" className="w-full bg-gray-50 border-none p-4 rounded-lg" />
-                                    {modalItem.id === 'kirua-homestead' ? (<select className="w-full bg-gray-50 border-none p-4 rounded-lg"><option>Short Stay (Less than 1 week)</option><option>Long Stay (1 Month+)</option><option>Digital Nomad Package</option></select>) : (<div className="grid grid-cols-2 gap-4"><input type="date" className="bg-gray-50 border-none p-4 rounded-lg" /><input type="number" placeholder="Guests" className="bg-gray-50 border-none p-4 rounded-lg" /></div>)}
+                                    {modalItem.id === 'kirua-homestead' ? (<select className="w-full bg-gray-50 border-none p-4 rounded-lg"><option>Short Stay (Less than 1 week)</option><option>Long Stay (1 Month+)</option><option>Immersive Sabbatical Package</option></select>) : (<div className="grid grid-cols-2 gap-4"><input type="date" className="bg-gray-50 border-none p-4 rounded-lg" /><input type="number" placeholder="Guests" className="bg-gray-50 border-none p-4 rounded-lg" /></div>)}
                                     <button className="w-full bg-brand-dark text-white py-4 rounded-lg font-bold hover:bg-brand-gold hover:text-black transition-colors">Send Request</button>
                                 </form>
                             </div>
