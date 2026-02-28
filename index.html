@@ -150,11 +150,19 @@
             {
                 id: 'kirua-homestead', type: 'stay', name: "The Kirua Homestead",
                 tagline: "Don't Visit. Just Live.", location: "Kirua, Kilimanjaro", price: "$120/night",
-                cover: "https://images.unsplash.com/photo-1623150646174-2792ae5ce998?w=1600",
-                gallery: ["https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800", "https://images.unsplash.com/photo-1625641772076-234b6e51240c?w=800", "https://images.unsplash.com/photo-1517327370886-06900a649669?w=800", "https://images.unsplash.com/photo-1605553147575-4089c20a9a4b?w=800", "https://images.unsplash.com/photo-1598556636780-e34988f5728a?w=800", "https://images.unsplash.com/photo-1471696035578-3d8c78d99684?w=800"],
+                cover: "./KIRUA/3K6D5655.JPG",
+                gallery: ["./KIRUA/3K6D5655.JPG", "./KIRUA/3K6D5582.JPG", "./KIRUA/3K6D5585.JPG", "./KIRUA/3K6D5588.JPG", "./KIRUA/3K6D5597.JPG"],
                 features: ["Mt. Kilimanjaro View", "Organic Garden", "Fast WiFi", "Private Kitchen", "Community Access"],
-                desc: "Located in the lush slopes of Kirua, this is a fully furnished home integrated into a welcoming Chagga family compound. You are not a guest; you are family.",
-                details: [{ title: "Morning", desc: "Fresh brewed coffee from the garden." }, { title: "Daytime", desc: "Walk to the local market or hike waterfalls." }, { title: "Evening", desc: "Join the family for 'Machalari'." }]
+                desc: "The Kirua Homestead",
+                fullGallery: [
+                    "./KIRUA/3K6D5582.JPG", "./KIRUA/3K6D5585.JPG", "./KIRUA/3K6D5588.JPG",
+                    "./KIRUA/3K6D5597.JPG", "./KIRUA/3K6D5600.JPG", "./KIRUA/3K6D5601.JPG",
+                    "./KIRUA/3K6D5607.JPG", "./KIRUA/3K6D5610.JPG", "./KIRUA/3K6D5615.JPG",
+                    "./KIRUA/3K6D5620.JPG", "./KIRUA/3K6D5621.JPG", "./KIRUA/3K6D5626.JPG",
+                    "./KIRUA/3K6D5630.JPG", "./KIRUA/3K6D5631.JPG", "./KIRUA/3K6D5636.JPG",
+                    "./KIRUA/3K6D5639.JPG", "./KIRUA/3K6D5642.JPG", "./KIRUA/3K6D5644.JPG",
+                    "./KIRUA/3K6D5646.JPG", "./KIRUA/3K6D5652.JPG", "./KIRUA/3K6D5655.JPG"
+                ]
             },
             {
                 id: 'marangu-sanctuary', type: 'stay', name: "The Marangu Sanctuary",
@@ -275,6 +283,118 @@
                                     <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
                                 </div>
                             ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const KiruaDetailView = ({ data, onBack, onBook }) => {
+            const [lightboxOpen, setLightboxOpen] = useState(false);
+
+            useEffect(() => {
+                window.scrollTo(0, 0);
+                lucide.createIcons();
+
+                // Simple scroll observer for staggering animations
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('animate-reveal');
+                        }
+                    });
+                }, { threshold: 0.1 });
+
+                document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+                return () => observer.disconnect();
+            }, []);
+
+            return (
+                <div className="bg-brand-cream min-h-screen fade-enter font-sans text-gray-800">
+                    {lightboxOpen && <MasonryGallery images={data.fullGallery} onClose={() => { setLightboxOpen(false); lucide.createIcons(); }} />}
+
+                    {/* HERO */}
+                    <div className="h-screen relative flex items-center justify-center overflow-hidden">
+                        <img src="./KIRUA/3K6D5655.JPG" alt="The Kirua Homestead" className="absolute inset-0 w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-black/30"></div>
+
+                        <button onClick={onBack} className="absolute top-8 left-8 bg-white/10 backdrop-blur-md text-white px-6 py-2 rounded-full flex items-center gap-2 hover:bg-white hover:text-black transition-all z-20 border border-white/20">
+                            <i data-lucide="arrow-left" className="w-5 h-5"></i> Back
+                        </button>
+
+                        <button onClick={() => setLightboxOpen(true)} className="absolute top-8 right-8 bg-white/10 backdrop-blur-md text-white px-8 py-3 rounded-full flex items-center gap-3 hover:bg-white hover:text-black transition-all z-20 border border-white/20 font-serif text-lg tracking-wide shadow-2xl">
+                            <i data-lucide="image" className="w-5 h-5"></i> Explore the Homestead
+                        </button>
+
+                        <div className="relative z-10 text-center text-white px-4">
+                            <h1 className="text-6xl md:text-8xl font-serif mb-6 leading-tight drop-shadow-xl">{data.name}</h1>
+                            <p className="text-xl md:text-3xl font-light tracking-[0.1em] drop-shadow-md">{data.tagline}</p>
+                        </div>
+                    </div>
+
+                    {/* SECTION 1: The Immersion */}
+                    <div className="container mx-auto px-6 py-24 md:py-32 max-w-4xl text-center reveal-on-scroll">
+                        <h2 className="text-3xl md:text-5xl font-serif text-brand-dark mb-10 leading-tight">The Immersion</h2>
+                        <p className="text-xl md:text-2xl text-gray-600 leading-relaxed font-light">
+                            "Perched on the lush, emerald foothills of Mount Kilimanjaro, Kirua is not a destination—it is a lifestyle. Here, you are not a tourist; you are family. Wake up to the mist rolling off the mountain and the rich, earthy scent of organic coffee blooming right outside your window."
+                        </p>
+                    </div>
+
+                    {/* ASYMMETRICAL IMAGES */}
+                    <div className="container mx-auto px-6 py-12">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                            <div className="w-full h-[60vh] md:h-[80vh] md:-mt-24 reveal-on-scroll" style={{ transitionDelay: '0.2s' }}>
+                                <img src="./KIRUA/3K6D5582.JPG" alt="Kirua Detail" className="w-full h-full object-cover rounded-sm shadow-xl" />
+                            </div>
+                            <div className="w-full h-[50vh] md:h-[70vh] md:ml-12 md:mt-24 reveal-on-scroll" style={{ transitionDelay: '0.4s' }}>
+                                <img src="./KIRUA/3K6D5585.JPG" alt="Kirua Lifestyle" className="w-full h-full object-cover rounded-sm shadow-2xl" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* SECTION 2: The Space */}
+                    <div className="container mx-auto px-6 py-24 md:py-32 max-w-5xl flex justify-end">
+                        <div className="max-w-2xl reveal-on-scroll">
+                            <h2 className="text-3xl md:text-5xl font-serif text-brand-dark mb-10 leading-tight">The Space</h2>
+                            <p className="text-xl md:text-2xl text-gray-600 leading-relaxed font-light">
+                                "A Sanctuary for the Soul and the Senses. Designed for those who seek deep connection or a quiet space to create. The homestead blends traditional Chagga warmth with modern digital-nomad essentials, including high-speed Starlink internet and a private kitchen. Step outside to harvest your own organic vegetables or simply bask in the uninterrupted views of the summit."
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* FULL WIDTH PARALLAX BREAK */}
+                    <div className="w-full h-[70vh] relative overflow-hidden my-12 bg-fixed bg-center bg-cover" style={{ backgroundImage: "url('./KIRUA/3K6D5597.JPG')" }}>
+                    </div>
+
+                    {/* SECTION 3: The Local Rhythm & BOOKING */}
+                    <div className="container mx-auto px-6 py-24 md:py-32 grid grid-cols-1 lg:grid-cols-2 gap-16 items-start reveal-on-scroll">
+                        <div>
+                            <h2 className="text-3xl md:text-5xl font-serif text-brand-dark mb-10 leading-tight">The Local Rhythm</h2>
+                            <p className="text-xl md:text-2xl text-gray-600 leading-relaxed font-light mb-12">
+                                "Live the Unrushed Life. Spend your days hiking to hidden waterfalls, wandering through vibrant local markets, or learning the art of coffee roasting from the village elders. As evening approaches, gather around the fire to share stories and a warm plate of traditional 'Machalari'. This is authentic, unfiltered Tanzania."
+                            </p>
+
+                            <div className="grid grid-cols-2 gap-6">
+                                <img src="./KIRUA/3K6D5601.JPG" alt="Kirua Vibes" className="w-full h-64 object-cover rounded-sm" />
+                                <div className="bg-brand-green text-white p-8 flex flex-col justify-center items-center text-center rounded-sm">
+                                    <i data-lucide="sun" className="w-12 h-12 mb-4 text-brand-gold"></i>
+                                    <p className="font-serif text-xl">Breathe the Mountain.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* STICKY CARD */}
+                        <div className="lg:sticky lg:top-12 bg-white p-12 rounded-sm shadow-2xl border border-gray-100 max-w-md mx-auto w-full">
+                            <h3 className="text-4xl font-serif text-brand-dark mb-4">Don't Visit. Just Live.</h3>
+                            <p className="text-gray-500 mb-10 text-lg">Secure your stay in the Kirua Homestead. Traditional Chagga warmth meets digital-nomad essentials.</p>
+                            <button onClick={() => onBook(data)} className="w-full bg-brand-dark text-white py-6 font-serif text-xl tracking-wider hover:bg-brand-gold hover:text-black transition-colors shadow-lg flex justify-center items-center gap-3">
+                                Check Availability <i data-lucide="arrow-right" className="w-6 h-6"></i>
+                            </button>
+                            <div className="mt-8 pt-8 border-t border-gray-200 text-center">
+                                <button onClick={() => setLightboxOpen(true)} className="text-brand-earth hover:text-brand-dark transition-colors font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 w-full">
+                                    <i data-lucide="grid" className="w-4 h-4"></i> Explore the Homestead
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -476,6 +596,8 @@
                                 </div>
                             </div>
                         </div>
+                    ) : activeData && activeData.id === 'kirua-homestead' ? (
+                        <KiruaDetailView data={activeData} onBack={() => setView('home')} onBook={handleBook} />
                     ) : activeData && activeData.id === 'marangu-sanctuary' ? (
                         <MaranguDetailView data={activeData} onBack={() => setView('home')} onBook={handleBook} />
                     ) : (
