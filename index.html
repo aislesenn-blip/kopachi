@@ -41,6 +41,16 @@
         .fade-enter { animation: fadeIn 0.8s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-on-scroll.animate-reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -147,12 +157,25 @@
                 details: [{ title: "Morning", desc: "Fresh brewed coffee from the garden." }, { title: "Daytime", desc: "Walk to the local market or hike waterfalls." }, { title: "Evening", desc: "Join the family for 'Machalari'." }]
             },
             {
-                id: 'zanzibar-villa', type: 'stay', name: "Cliffside Villa",
-                tagline: "Ocean Solitude.", location: "Nungwi, Zanzibar", price: "$450/night",
-                cover: "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=1600",
-                gallery: ["https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800", "https://images.unsplash.com/photo-1484154218962-a1c00207099b?w=800", "https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c78?w=800", "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800"],
-                features: ["Private Pool", "Chef", "Ocean Access"],
-                desc: "A sanctuary perched on the coral cliffs. Designed for total privacy."
+                id: 'marangu-sanctuary', type: 'stay', name: "The Marangu Sanctuary",
+                tagline: "Breathe the Mountain. Live the Legacy.", location: "Marangu, Kilimanjaro", price: "$350/night",
+                cover: "./images/3K6D5855.JPG",
+                gallery: ["./images/3K6D5855.JPG", "./images/3K6D5858.JPG", "./images/3K6D5864.JPG", "./images/3K6D5868.JPG", "./images/3K6D5872.JPG"],
+                features: [],
+                desc: "The Marangu Sanctuary",
+                fullGallery: [
+                    "./images/3K6D5825.JPG", "./images/3K6D5829.JPG", "./images/3K6D5830.JPG",
+                    "./images/3K6D5833.JPG", "./images/3K6D5837.JPG", "./images/3K6D5841.JPG",
+                    "./images/3K6D5844.JPG", "./images/3K6D5848.JPG", "./images/3K6D5851.JPG",
+                    "./images/3K6D5853.JPG", "./images/3K6D5855.JPG", "./images/3K6D5858.JPG",
+                    "./images/3K6D5864.JPG", "./images/3K6D5868.JPG", "./images/3K6D5872.JPG",
+                    "./images/3K6D5877.JPG", "./images/3K6D5880.JPG", "./images/3K6D5882.JPG",
+                    "./images/3K6D5885.JPG", "./images/3K6D5888.JPG", "./images/3K6D5889.JPG",
+                    "./images/3K6D5892.JPG", "./images/3K6D5894.JPG", "./images/3K6D5897.JPG",
+                    "./images/3K6D5902.JPG", "./images/3K6D5903.JPG", "./images/3K6D5907.JPG",
+                    "./images/3K6D5912.JPG", "./images/3K6D5914.JPG", "./images/3K6D5915.JPG",
+                    "./images/3K6D5917.JPG", "./images/3K6D5920.JPG", "./images/3K6D5921.JPG"
+                ]
             }
         ];
 
@@ -213,6 +236,167 @@
                 </div>
             </div>
         );
+
+        const LightboxGallery = ({ images, onClose }) => {
+            const [currentIndex, setCurrentIndex] = useState(0);
+
+            useEffect(() => {
+                lucide.createIcons();
+            }, [currentIndex]);
+
+            useEffect(() => {
+                const handleKeyDown = (e) => {
+                    if (e.key === 'Escape') onClose();
+                    if (e.key === 'ArrowRight') setCurrentIndex(prev => (prev + 1) % images.length);
+                    if (e.key === 'ArrowLeft') setCurrentIndex(prev => (prev - 1 + images.length) % images.length);
+                };
+                window.addEventListener('keydown', handleKeyDown);
+                return () => window.removeEventListener('keydown', handleKeyDown);
+            }, [images.length, onClose]);
+
+            return (
+                <div className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center fade-enter">
+                    <button onClick={onClose} className="absolute top-8 right-8 text-white/50 hover:text-white transition-colors z-50">
+                        <i data-lucide="x" className="w-10 h-10"></i>
+                    </button>
+
+                    <button onClick={() => setCurrentIndex(prev => (prev - 1 + images.length) % images.length)} className="absolute left-8 text-white/50 hover:text-white transition-colors z-50">
+                        <i data-lucide="chevron-left" className="w-10 h-10"></i>
+                    </button>
+
+                    <div className="w-full max-w-6xl h-[80vh] flex flex-col items-center justify-center p-4">
+                        <img
+                            src={images[currentIndex]}
+                            alt={`Gallery Image ${currentIndex + 1}`}
+                            className="max-w-full max-h-full object-contain shadow-2xl transition-opacity duration-300"
+                            key={currentIndex}
+                        />
+                        <div className="mt-6 text-white/50 font-sans tracking-widest text-sm">
+                            {currentIndex + 1} / {images.length}
+                        </div>
+                    </div>
+
+                    <button onClick={() => setCurrentIndex(prev => (prev + 1) % images.length)} className="absolute right-8 text-white/50 hover:text-white transition-colors z-50">
+                        <i data-lucide="chevron-right" className="w-10 h-10"></i>
+                    </button>
+
+                    {/* Masonry Grid Button/Toggle could go here, but simple carousel is elegant and performant */}
+                </div>
+            );
+        };
+
+        const MaranguDetailView = ({ data, onBack, onBook }) => {
+            const [lightboxOpen, setLightboxOpen] = useState(false);
+
+            useEffect(() => {
+                window.scrollTo(0, 0);
+                lucide.createIcons();
+
+                // Simple scroll observer for staggering animations
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('animate-reveal');
+                        }
+                    });
+                }, { threshold: 0.1 });
+
+                document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+                return () => observer.disconnect();
+            }, []);
+
+            return (
+                <div className="bg-brand-cream min-h-screen fade-enter font-sans text-gray-800">
+                    {lightboxOpen && <LightboxGallery images={data.fullGallery} onClose={() => { setLightboxOpen(false); lucide.createIcons(); }} />}
+
+                    {/* HERO */}
+                    <div className="h-screen relative flex items-center justify-center overflow-hidden">
+                        <img src="./images/3K6D5855.JPG" alt="The Marangu Sanctuary" className="absolute inset-0 w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-black/30"></div>
+
+                        <button onClick={onBack} className="absolute top-8 left-8 bg-white/10 backdrop-blur-md text-white px-6 py-2 rounded-full flex items-center gap-2 hover:bg-white hover:text-black transition-all z-20 border border-white/20">
+                            <i data-lucide="arrow-left" className="w-5 h-5"></i> Back
+                        </button>
+
+                        <button onClick={() => setLightboxOpen(true)} className="absolute top-8 right-8 bg-white/10 backdrop-blur-md text-white px-6 py-3 rounded-full flex items-center gap-2 hover:bg-white hover:text-black transition-all z-20 border border-white/20 font-serif tracking-wide">
+                            <i data-lucide="image" className="w-5 h-5"></i> View Full Gallery (33 Photos)
+                        </button>
+
+                        <div className="relative z-10 text-center text-white px-4">
+                            <h1 className="text-6xl md:text-8xl font-serif mb-6 leading-tight drop-shadow-xl">{data.name}</h1>
+                            <p className="text-xl md:text-3xl font-light tracking-[0.1em] drop-shadow-md">{data.tagline}</p>
+                        </div>
+                    </div>
+
+                    {/* SECTION 1: The Arrival */}
+                    <div className="container mx-auto px-6 py-24 md:py-32 max-w-4xl text-center reveal-on-scroll">
+                        <h2 className="text-3xl md:text-5xl font-serif text-brand-dark mb-10 leading-tight">The Arrival</h2>
+                        <p className="text-xl md:text-2xl text-gray-600 leading-relaxed font-light">
+                            "Beyond the tourist trails lies Marangu—the true beating heart of Kilimanjaro. Here, time slows down. You don't just stay in a house; you are embraced by the mountain's shadow and the rich heritage of the Chagga people. Wake up to the scent of dew on banana leaves and the rich aroma of freshly roasted Arabica coffee."
+                        </p>
+                    </div>
+
+                    {/* ASYMMETRICAL IMAGES */}
+                    <div className="container mx-auto px-6 py-12">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                            <div className="w-full h-[60vh] md:h-[80vh] md:-mt-24 reveal-on-scroll" style={{ transitionDelay: '0.2s' }}>
+                                <img src="./images/3K6D5858.JPG" alt="Interior Details" className="w-full h-full object-cover rounded-sm shadow-xl" />
+                            </div>
+                            <div className="w-full h-[50vh] md:h-[70vh] md:ml-12 md:mt-24 reveal-on-scroll" style={{ transitionDelay: '0.4s' }}>
+                                <img src="./images/3K6D5864.JPG" alt="Living Spaces" className="w-full h-full object-cover rounded-sm shadow-2xl" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* SECTION 2: The Space */}
+                    <div className="container mx-auto px-6 py-24 md:py-32 max-w-5xl flex justify-end">
+                        <div className="max-w-2xl reveal-on-scroll">
+                            <h2 className="text-3xl md:text-5xl font-serif text-brand-dark mb-10 leading-tight">The Space</h2>
+                            <p className="text-xl md:text-2xl text-gray-600 leading-relaxed font-light">
+                                "Modern Comfort, Rooted in Nature. We built this sanctuary to be your private haven. Expansive living spaces blend seamlessly with the lush, green outdoors. Whether you are working remotely or unwinding after a trek, enjoy uninterrupted peace of mind with our dedicated power generator and premium amenities. It is a home that anticipates your needs while keeping you grounded in the earth."
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* FULL WIDTH PARALLAX BREAK */}
+                    <div className="w-full h-[70vh] relative overflow-hidden my-12 bg-fixed bg-center bg-cover" style={{ backgroundImage: "url('./images/3K6D5868.JPG')" }}>
+                        {/* We use true bg-fixed parallax here instead of static object-cover */}
+                    </div>
+
+                    {/* SECTION 3: The Rhythm & BOOKING */}
+                    <div className="container mx-auto px-6 py-24 md:py-32 grid grid-cols-1 lg:grid-cols-2 gap-16 items-start reveal-on-scroll">
+                        <div>
+                            <h2 className="text-3xl md:text-5xl font-serif text-brand-dark mb-10 leading-tight">The Rhythm</h2>
+                            <p className="text-xl md:text-2xl text-gray-600 leading-relaxed font-light mb-12">
+                                "A Rhythm Dictated by the Sun. Step outside your door and wander through ancient coffee farms. Listen to the distant roar of hidden waterfalls. As evening falls, the mountain air cools, inviting you to gather, reflect, and simply be. This is not a vacation rental; it is a return to authentic living."
+                            </p>
+
+                            <div className="grid grid-cols-2 gap-6">
+                                <img src="./images/3K6D5872.JPG" alt="Evening Vibe 1" className="w-full h-64 object-cover rounded-sm" />
+                                <div className="bg-brand-green text-white p-8 flex flex-col justify-center items-center text-center rounded-sm">
+                                    <i data-lucide="sun" className="w-12 h-12 mb-4 text-brand-gold"></i>
+                                    <p className="font-serif text-xl">Breathe the Mountain.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* STICKY CARD */}
+                        <div className="lg:sticky lg:top-12 bg-white p-12 rounded-sm shadow-2xl border border-gray-100 max-w-md mx-auto w-full">
+                            <h3 className="text-4xl font-serif text-brand-dark mb-4">Live the Legacy</h3>
+                            <p className="text-gray-500 mb-10 text-lg">Secure your sanctuary on the slopes of Kilimanjaro. Dedicated power, premium amenities, authentic living.</p>
+                            <button onClick={() => onBook(data)} className="w-full bg-brand-dark text-white py-6 font-serif text-xl tracking-wider hover:bg-brand-gold hover:text-black transition-colors shadow-lg flex justify-center items-center gap-3">
+                                Reserve Now <i data-lucide="arrow-right" className="w-6 h-6"></i>
+                            </button>
+                            <div className="mt-8 pt-8 border-t border-gray-200 text-center">
+                                <button onClick={() => setLightboxOpen(true)} className="text-brand-earth hover:text-brand-dark transition-colors font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 w-full">
+                                    <i data-lucide="grid" className="w-4 h-4"></i> Explore 33 Photos
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
 
         const DetailView = ({ data, onBack, onBook }) => {
             useEffect(() => { window.scrollTo(0, 0); lucide.createIcons(); }, []);
@@ -296,6 +480,8 @@
                                 </div>
                             </div>
                         </div>
+                    ) : activeData && activeData.id === 'marangu-sanctuary' ? (
+                        <MaranguDetailView data={activeData} onBack={() => setView('home')} onBook={handleBook} />
                     ) : (
                         <DetailView data={activeData} onBack={() => setView('home')} onBook={handleBook} />
                     )}
