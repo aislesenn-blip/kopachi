@@ -159,8 +159,8 @@
             {
                 id: 'marangu-sanctuary', type: 'stay', name: "The Marangu Sanctuary",
                 tagline: "Breathe the Mountain. Live the Legacy.", location: "Marangu, Kilimanjaro", price: "$350/night",
-                cover: "./images/3K6D5855.JPG",
-                gallery: ["./images/3K6D5855.JPG", "./images/3K6D5858.JPG", "./images/3K6D5864.JPG", "./images/3K6D5868.JPG", "./images/3K6D5872.JPG"],
+                cover: "./images/3K6D5851.JPG",
+                gallery: ["./images/3K6D5851.JPG", "./images/3K6D5858.JPG", "./images/3K6D5864.JPG", "./images/3K6D5868.JPG", "./images/3K6D5872.JPG"],
                 features: [],
                 desc: "The Marangu Sanctuary",
                 fullGallery: [
@@ -237,50 +237,46 @@
             </div>
         );
 
-        const LightboxGallery = ({ images, onClose }) => {
-            const [currentIndex, setCurrentIndex] = useState(0);
-
+        const MasonryGallery = ({ images, onClose }) => {
             useEffect(() => {
                 lucide.createIcons();
-            }, [currentIndex]);
-
-            useEffect(() => {
                 const handleKeyDown = (e) => {
                     if (e.key === 'Escape') onClose();
-                    if (e.key === 'ArrowRight') setCurrentIndex(prev => (prev + 1) % images.length);
-                    if (e.key === 'ArrowLeft') setCurrentIndex(prev => (prev - 1 + images.length) % images.length);
                 };
                 window.addEventListener('keydown', handleKeyDown);
-                return () => window.removeEventListener('keydown', handleKeyDown);
-            }, [images.length, onClose]);
+                // Prevent body scroll when modal is open
+                document.body.style.overflow = 'hidden';
+                return () => {
+                    window.removeEventListener('keydown', handleKeyDown);
+                    document.body.style.overflow = 'auto';
+                };
+            }, [onClose]);
 
             return (
-                <div className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center fade-enter">
-                    <button onClick={onClose} className="absolute top-8 right-8 text-white/50 hover:text-white transition-colors z-50">
-                        <i data-lucide="x" className="w-10 h-10"></i>
-                    </button>
-
-                    <button onClick={() => setCurrentIndex(prev => (prev - 1 + images.length) % images.length)} className="absolute left-8 text-white/50 hover:text-white transition-colors z-50">
-                        <i data-lucide="chevron-left" className="w-10 h-10"></i>
-                    </button>
-
-                    <div className="w-full max-w-6xl h-[80vh] flex flex-col items-center justify-center p-4">
-                        <img
-                            src={images[currentIndex]}
-                            alt={`Gallery Image ${currentIndex + 1}`}
-                            className="max-w-full max-h-full object-contain shadow-2xl transition-opacity duration-300"
-                            key={currentIndex}
-                        />
-                        <div className="mt-6 text-white/50 font-sans tracking-widest text-sm">
-                            {currentIndex + 1} / {images.length}
-                        </div>
+                <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-3xl overflow-y-auto fade-enter">
+                    {/* Sticky Header */}
+                    <div className="sticky top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/80 to-transparent flex items-center justify-between px-8 z-50">
+                        <div className="text-white font-serif text-2xl tracking-widest uppercase">The Sanctuary Vault</div>
+                        <button onClick={onClose} className="text-white/70 hover:text-white transition-colors bg-white/10 hover:bg-white/20 p-4 rounded-full backdrop-blur-md border border-white/20">
+                            <i data-lucide="x" className="w-6 h-6"></i>
+                        </button>
                     </div>
 
-                    <button onClick={() => setCurrentIndex(prev => (prev + 1) % images.length)} className="absolute right-8 text-white/50 hover:text-white transition-colors z-50">
-                        <i data-lucide="chevron-right" className="w-10 h-10"></i>
-                    </button>
-
-                    {/* Masonry Grid Button/Toggle could go here, but simple carousel is elegant and performant */}
+                    {/* Masonry Grid Body */}
+                    <div className="container mx-auto px-4 pb-24 pt-8">
+                        <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+                            {images.map((src, index) => (
+                                <div key={index} className="break-inside-avoid relative group overflow-hidden rounded-md bg-white/5">
+                                    <SafeImage
+                                        src={src}
+                                        alt={`Sanctuary Vault Image ${index + 1}`}
+                                        className="w-full h-auto object-cover opacity-90 group-hover:opacity-100 transition-all duration-700 group-hover:scale-[1.02]"
+                                    />
+                                    <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             );
         };
@@ -307,18 +303,18 @@
 
             return (
                 <div className="bg-brand-cream min-h-screen fade-enter font-sans text-gray-800">
-                    {lightboxOpen && <LightboxGallery images={data.fullGallery} onClose={() => { setLightboxOpen(false); lucide.createIcons(); }} />}
+                    {lightboxOpen && <MasonryGallery images={data.fullGallery} onClose={() => { setLightboxOpen(false); lucide.createIcons(); }} />}
 
                     {/* HERO */}
                     <div className="h-screen relative flex items-center justify-center overflow-hidden">
-                        <img src="./images/3K6D5855.JPG" alt="The Marangu Sanctuary" className="absolute inset-0 w-full h-full object-cover" />
+                        <img src="./images/3K6D5851.JPG" alt="The Marangu Sanctuary" className="absolute inset-0 w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-black/30"></div>
 
                         <button onClick={onBack} className="absolute top-8 left-8 bg-white/10 backdrop-blur-md text-white px-6 py-2 rounded-full flex items-center gap-2 hover:bg-white hover:text-black transition-all z-20 border border-white/20">
                             <i data-lucide="arrow-left" className="w-5 h-5"></i> Back
                         </button>
 
-                        <button onClick={() => setLightboxOpen(true)} className="absolute top-8 right-8 bg-white/10 backdrop-blur-md text-white px-6 py-3 rounded-full flex items-center gap-2 hover:bg-white hover:text-black transition-all z-20 border border-white/20 font-serif tracking-wide">
+                        <button onClick={() => setLightboxOpen(true)} className="absolute top-8 right-8 bg-white/10 backdrop-blur-md text-white px-8 py-3 rounded-full flex items-center gap-3 hover:bg-white hover:text-black transition-all z-20 border border-white/20 font-serif text-lg tracking-wide shadow-2xl">
                             <i data-lucide="image" className="w-5 h-5"></i> View Full Gallery (33 Photos)
                         </button>
 
@@ -389,7 +385,7 @@
                             </button>
                             <div className="mt-8 pt-8 border-t border-gray-200 text-center">
                                 <button onClick={() => setLightboxOpen(true)} className="text-brand-earth hover:text-brand-dark transition-colors font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 w-full">
-                                    <i data-lucide="grid" className="w-4 h-4"></i> Explore 33 Photos
+                                    <i data-lucide="grid" className="w-4 h-4"></i> View Full Gallery (33 Photos)
                                 </button>
                             </div>
                         </div>
