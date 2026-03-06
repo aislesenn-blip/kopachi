@@ -126,6 +126,37 @@
         };
 
         // --- 2. INTELLIGENT IMAGE (Kwa picha za ndani) ---
+        const DynamicImageSlot = ({ images, className }) => {
+            const [currentIndex, setCurrentIndex] = useState(0);
+
+            useEffect(() => {
+                if (!images || images.length <= 1) return;
+                const interval = setInterval(() => {
+                    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+                }, 4000 + Math.random() * 2000); // 4-6 seconds, slightly randomized for a staggered feel
+                return () => clearInterval(interval);
+            }, [images]);
+
+            if (!images || images.length === 0) return null;
+
+            return (
+                <div className={`relative overflow-hidden ${className}`}>
+                    {images.map((img, index) => (
+                        <div
+                            key={index}
+                            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentIndex ? 'opacity-100' : 'opacity-0'}`}
+                        >
+                            <SafeImage src={img.src} alt={img.alt || 'Kopachi View'} queryTerm={img.queryTerm || "tanzania luxury"} className="w-full h-full object-cover" />
+                        </div>
+                    ))}
+                    {/* Placeholder to maintain dimensions if not explicitly set via className */}
+                    <div className="relative opacity-0 pointer-events-none">
+                       <SafeImage src={images[0].src} alt={images[0].alt || 'Kopachi View'} queryTerm={images[0].queryTerm || "tanzania luxury"} className="w-full h-auto object-cover" />
+                    </div>
+                </div>
+            );
+        };
+
         const SafeImage = ({ src, alt, className, queryTerm = "tanzania nature" }) => {
             const [imgSrc, setImgSrc] = useState(src);
 
@@ -245,43 +276,49 @@
             </div>
         );
 
-        const MasonryGallery = ({ images, onClose }) => {
+        // --- FULLSCREEN MASONRY GALLERY ---
+        const FullscreenMasonryGallery = ({ images, isOpen, onClose, title }) => {
             useEffect(() => {
-                lucide.createIcons();
-                const handleKeyDown = (e) => {
-                    if (e.key === 'Escape') onClose();
-                };
-                window.addEventListener('keydown', handleKeyDown);
-                // Prevent body scroll when modal is open
-                document.body.style.overflow = 'hidden';
-                return () => {
-                    window.removeEventListener('keydown', handleKeyDown);
-                    document.body.style.overflow = 'auto';
-                };
-            }, [onClose]);
+                if (isOpen) {
+                    lucide.createIcons();
+                    const handleKeyDown = (e) => {
+                        if (e.key === 'Escape') onClose();
+                    };
+                    window.addEventListener('keydown', handleKeyDown);
+                    document.body.style.overflow = 'hidden';
+                    return () => {
+                        window.removeEventListener('keydown', handleKeyDown);
+                        document.body.style.overflow = 'auto';
+                    };
+                }
+            }, [isOpen, onClose]);
+
+            if (!isOpen || !images || images.length === 0) return null;
 
             return (
-                <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-3xl overflow-y-auto fade-enter">
-                    {/* Sticky Header */}
-                    <div className="sticky top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/80 to-transparent flex items-center justify-between px-8 z-50">
-                        <div className="text-white font-serif text-2xl tracking-widest uppercase">The Sanctuary Vault</div>
-                        <button onClick={onClose} className="text-white/70 hover:text-white transition-colors bg-white/10 hover:bg-white/20 p-4 rounded-full backdrop-blur-md border border-white/20">
-                            <i data-lucide="x" className="w-6 h-6"></i>
+                <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl overflow-y-auto no-scrollbar">
+                    <div className="sticky top-0 w-full z-10 flex justify-between items-center p-6 bg-gradient-to-b from-black/80 to-transparent">
+                        <h2 className="text-white text-2xl font-serif tracking-widest uppercase">{title || "Gallery"}</h2>
+                        <button onClick={onClose} className="text-white hover:text-brand-gold transition-colors flex items-center space-x-2 group">
+                            <span className="uppercase tracking-widest text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">Close</span>
+                            <div className="p-3 bg-white/10 rounded-full backdrop-blur-sm group-hover:bg-white/20 transition-all">
+                                <i data-lucide="x" className="w-6 h-6"></i>
+                            </div>
                         </button>
                     </div>
 
-                    {/* Masonry Grid Body */}
-                    <div className="container mx-auto px-4 pb-24 pt-8">
-                        <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
-                            {images.map((src, index) => (
-                                <div key={index} className="break-inside-avoid relative group overflow-hidden rounded-md bg-white/5">
-                                    <img
-                                        src={src}
-                                        loading="lazy"
-                                        alt={`Sanctuary Vault Image ${index + 1}`}
-                                        className="w-full h-auto object-cover opacity-90 group-hover:opacity-100 transition-all duration-700 group-hover:scale-[1.02]"
-                                    />
-                                    <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
+                    <div className="container mx-auto px-4 py-12">
+                        {/* CSS Columns Masonry */}
+                        <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
+                            {images.map((img, index) => (
+                                <div key={index} className="break-inside-avoid relative group overflow-hidden rounded-md shadow-2xl">
+                                    {/* Handle both string src and object {src, alt, queryTerm} formats */}
+                                    {typeof img === 'string' ? (
+                                        <SafeImage src={img} alt={`Gallery Image ${index}`} queryTerm="tanzania luxury travel" className="w-full h-auto object-cover transition-transform duration-1000 group-hover:scale-[1.03]" />
+                                    ) : (
+                                        <SafeImage src={img.src} alt={img.alt || `Gallery Image ${index}`} queryTerm={img.queryTerm || "tanzania luxury travel"} className="w-full h-auto object-cover transition-transform duration-1000 group-hover:scale-[1.03]" />
+                                    )}
+                                    <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-700"></div>
                                 </div>
                             ))}
                         </div>
@@ -312,7 +349,12 @@
 
             return (
                 <div className="bg-brand-cream min-h-screen fade-enter font-sans text-gray-800">
-                    {lightboxOpen && <MasonryGallery images={data.fullGallery} onClose={() => { setLightboxOpen(false); lucide.createIcons(); }} />}
+                    <FullscreenMasonryGallery
+                        isOpen={lightboxOpen}
+                        images={data.fullGallery}
+                        onClose={() => { setLightboxOpen(false); lucide.createIcons(); }}
+                        title="Explore the Homestead"
+                    />
 
                     {/* HERO */}
                     <div className="h-screen relative flex items-center justify-center overflow-hidden">
@@ -341,14 +383,28 @@
                         </p>
                     </div>
 
-                    {/* ASYMMETRICAL IMAGES */}
+                    {/* ASYMMETRICAL IMAGES - L8 Dynamic Slots */}
                     <div className="container mx-auto px-6 py-12">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                             <div className="w-full h-[60vh] md:h-[80vh] md:-mt-24 reveal-on-scroll" style={{ transitionDelay: '0.2s' }}>
-                                <img src="./KIRUA/3K6D5582.JPG" alt="Kirua Detail" className="w-full h-full object-cover rounded-sm shadow-xl" />
+                                <DynamicImageSlot
+                                    images={[
+                                        { src: "./KIRUA/3K6D5582.JPG", alt: "Kirua Living Detail", queryTerm: "luxury living room" },
+                                        { src: "./KIRUA/3K6D5585.JPG", alt: "Kirua Space", queryTerm: "elegant home" },
+                                        { src: "./KIRUA/3K6D5588.JPG", alt: "Kirua Interior", queryTerm: "rustic interior" }
+                                    ]}
+                                    className="w-full h-full rounded-sm shadow-xl"
+                                />
                             </div>
                             <div className="w-full h-[50vh] md:h-[70vh] md:ml-12 md:mt-24 reveal-on-scroll" style={{ transitionDelay: '0.4s' }}>
-                                <img src="./KIRUA/3K6D5600.JPG" alt="Kirua Detail" className="w-full h-full object-cover rounded-sm shadow-2xl" />
+                                <DynamicImageSlot
+                                    images={[
+                                        { src: "./KIRUA/3K6D5600.JPG", alt: "Kirua Bedroom Detail", queryTerm: "cozy bedroom" },
+                                        { src: "./KIRUA/3K6D5601.JPG", alt: "Kirua Comfort", queryTerm: "luxury bedroom" },
+                                        { src: "./KIRUA/3K6D5607.JPG", alt: "Kirua Decor", queryTerm: "beautiful bedding" }
+                                    ]}
+                                    className="w-full h-full rounded-sm shadow-2xl"
+                                />
                             </div>
                         </div>
                     </div>
@@ -376,7 +432,14 @@
                             </p>
 
                             <div className="grid grid-cols-2 gap-6">
-                                <img src="./KIRUA/3K6D5601.JPG" alt="Kirua Vibes" className="w-full h-64 object-cover rounded-sm" />
+                                <DynamicImageSlot
+                                    images={[
+                                        { src: "./KIRUA/3K6D5601.JPG", alt: "Kirua Vibes 1", queryTerm: "authentic local life" },
+                                        { src: "./KIRUA/3K6D5610.JPG", alt: "Kirua Vibes 2", queryTerm: "cultural immersion" },
+                                        { src: "./KIRUA/3K6D5615.JPG", alt: "Kirua Vibes 3", queryTerm: "nature exploration" }
+                                    ]}
+                                    className="w-full h-64 rounded-sm"
+                                />
                                 <div className="bg-brand-green text-white p-8 flex flex-col justify-center items-center text-center rounded-sm">
                                     <i data-lucide="sun" className="w-12 h-12 mb-4 text-brand-gold"></i>
                                     <p className="font-serif text-xl">Breathe the Mountain.</p>
@@ -424,7 +487,12 @@
 
             return (
                 <div className="bg-brand-cream min-h-screen fade-enter font-sans text-gray-800">
-                    {lightboxOpen && <MasonryGallery images={data.fullGallery} onClose={() => { setLightboxOpen(false); lucide.createIcons(); }} />}
+                    <FullscreenMasonryGallery
+                        isOpen={lightboxOpen}
+                        images={data.fullGallery}
+                        onClose={() => { setLightboxOpen(false); lucide.createIcons(); }}
+                        title="Explore the Sanctuary"
+                    />
 
                     {/* HERO */}
                     <div className="h-screen relative flex items-center justify-center overflow-hidden">
@@ -453,14 +521,28 @@
                         </p>
                     </div>
 
-                    {/* ASYMMETRICAL IMAGES */}
+                    {/* ASYMMETRICAL IMAGES - L8 Dynamic Slots */}
                     <div className="container mx-auto px-6 py-12">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                             <div className="w-full h-[60vh] md:h-[80vh] md:-mt-24 reveal-on-scroll" style={{ transitionDelay: '0.2s' }}>
-                                <img src="./images/3K6D5858.JPG" alt="Interior Details" className="w-full h-full object-cover rounded-sm shadow-xl" />
+                                <DynamicImageSlot
+                                    images={[
+                                        { src: "./images/3K6D5858.JPG", alt: "Marangu Interior 1", queryTerm: "luxury living room" },
+                                        { src: "./images/3K6D5860.JPG", alt: "Marangu Interior 2", queryTerm: "elegant home" },
+                                        { src: "./images/3K6D5862.JPG", alt: "Marangu Interior 3", queryTerm: "rustic interior" }
+                                    ]}
+                                    className="w-full h-full rounded-sm shadow-xl"
+                                />
                             </div>
                             <div className="w-full h-[50vh] md:h-[70vh] md:ml-12 md:mt-24 reveal-on-scroll" style={{ transitionDelay: '0.4s' }}>
-                                <img src="./images/3K6D5864.JPG" alt="Living Spaces" className="w-full h-full object-cover rounded-sm shadow-2xl" />
+                                <DynamicImageSlot
+                                    images={[
+                                        { src: "./images/3K6D5864.JPG", alt: "Marangu Bedroom 1", queryTerm: "cozy bedroom" },
+                                        { src: "./images/3K6D5866.JPG", alt: "Marangu Bedroom 2", queryTerm: "luxury bedroom" },
+                                        { src: "./images/3K6D5868.JPG", alt: "Marangu Bedroom 3", queryTerm: "beautiful bedding" }
+                                    ]}
+                                    className="w-full h-full rounded-sm shadow-2xl"
+                                />
                             </div>
                         </div>
                     </div>
@@ -489,7 +571,14 @@
                             </p>
 
                             <div className="grid grid-cols-2 gap-6">
-                                <img src="./images/3K6D5872.JPG" alt="Evening Vibe 1" className="w-full h-64 object-cover rounded-sm" />
+                                <DynamicImageSlot
+                                    images={[
+                                        { src: "./images/3K6D5872.JPG", alt: "Evening Vibe 1", queryTerm: "peaceful evening" },
+                                        { src: "./images/3K6D5874.JPG", alt: "Evening Vibe 2", queryTerm: "firepit" },
+                                        { src: "./images/3K6D5876.JPG", alt: "Evening Vibe 3", queryTerm: "sunset nature" }
+                                    ]}
+                                    className="w-full h-64 rounded-sm"
+                                />
                                 <div className="bg-brand-green text-white p-8 flex flex-col justify-center items-center text-center rounded-sm">
                                     <i data-lucide="sun" className="w-12 h-12 mb-4 text-brand-gold"></i>
                                     <p className="font-serif text-xl">Breathe the Mountain.</p>
@@ -583,43 +672,52 @@
                                 </div>
                             </div>
 
-                            {/* THE NEIGHBOURHOOD SECTION */}
-                            <div className="bg-brand-cream py-24 px-6 relative overflow-hidden">
-                                <div className="container mx-auto">
-                                    <div className="text-center mb-16 max-w-3xl mx-auto">
-                                        <span className="text-brand-earth uppercase tracking-widest text-sm font-bold">Beyond the Walls</span>
-                                        <h2 className="text-4xl md:text-6xl font-serif text-brand-dark mt-4 mb-6 leading-tight">Tired of staying inside?<br />Step out into our backyard.</h2>
-                                        <p className="text-xl text-gray-600 font-light leading-relaxed">The sanctuary doesn't end at the doorstep. Our neighbourhood is a living, breathing canvas of lush rainforests, hidden waterfalls, and winding trails carved by centuries of Chagga history. Breathe the mountain air and lose yourself in the wild, serene beauty that surrounds us.</p>
+                            {/* THE NEIGHBOURHOOD SECTION - L8 Elite Redesign */}
+                            <div className="bg-brand-cream py-32 md:py-40 relative overflow-hidden">
+                                {/* Cinematic Hero Image (Parallax Full Bleed) */}
+                                <div className="w-full h-[70vh] md:h-[90vh] relative reveal-on-scroll">
+                                    <div className="absolute inset-0 bg-fixed bg-center bg-cover scale-105" style={{ backgroundImage: "url('./NEIGHBOURHOOD/Exploring-Tanzanias-Hidden-Waterfalls-2.jpg')" }}></div>
+                                    <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/20 to-black/60"></div>
+                                    <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-24 container mx-auto text-white">
+                                        <h2 className="text-6xl md:text-9xl font-serif leading-none tracking-tight mb-4 reveal-on-scroll drop-shadow-lg">Beyond the Walls</h2>
+                                        <p className="text-xl md:text-3xl font-light tracking-wide font-sans reveal-on-scroll" style={{ transitionDelay: '0.2s' }}>Tired of staying inside? Step out into our backyard.</p>
+                                    </div>
+                                </div>
+
+                                <div className="container mx-auto px-6 mt-32 md:mt-48">
+                                    <div className="max-w-4xl mx-auto text-center mb-32 md:mb-48 reveal-on-scroll">
+                                        <p className="text-lg md:text-xl text-brand-dark font-sans font-light leading-relaxed tracking-wide">
+                                            The sanctuary doesn't end at the doorstep. Our neighbourhood is a living, breathing canvas of lush rainforests, hidden waterfalls, and winding trails carved by centuries of Chagga history. Breathe the mountain air and lose yourself in the wild, serene beauty that surrounds us.
+                                        </p>
                                     </div>
 
-                                    {/* Full Width Hero/Parallax Image for Neighbourhood */}
-                                    <div className="w-full h-[60vh] md:h-[70vh] mb-16 rounded-2xl overflow-hidden relative shadow-2xl">
-                                        <div className="absolute inset-0 bg-fixed bg-center bg-cover" style={{ backgroundImage: "url('./NEIGHBOURHOOD/Exploring-Tanzanias-Hidden-Waterfalls-2.jpg')" }}></div>
-                                        {/* Fallback for mobile where bg-fixed might not work well, or just pure aesthetic choice - let's keep it simple with img to guarantee loading if bg-fixed fails */}
-                                        <img src="./NEIGHBOURHOOD/Exploring-Tanzanias-Hidden-Waterfalls-2.jpg" alt="Tanzania Hidden Waterfalls" className="w-full h-full object-cover hidden md:block opacity-0" />
-                                    </div>
+                                    {/* Bespoke Asymmetrical Layout with Extreme Negative Space */}
+                                    <div className="relative">
+                                        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 items-center">
+                                            {/* Large Left Image */}
+                                            <div className="md:col-span-7 relative z-10 reveal-on-scroll">
+                                                <SafeImage src="./NEIGHBOURHOOD/e7.jpg" alt="Local Hike" queryTerm="tanzania waterfall lush" className="w-full h-[60vh] md:h-[80vh] object-cover rounded-sm shadow-2xl" />
+                                            </div>
 
-                                    {/* The Mix: Staggered Aesthetic Grid */}
-                                    <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-                                        <div className="break-inside-avoid relative group overflow-hidden rounded-xl shadow-md">
-                                            <SafeImage src="./NEIGHBOURHOOD/e7.jpg" alt="Local Hike" queryTerm="tanzania waterfall lush" className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
-                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
+                                            {/* Overlapping Right Text & Image */}
+                                            <div className="md:col-span-5 relative md:-ml-24 md:mt-48 z-20 reveal-on-scroll" style={{ transitionDelay: '0.3s' }}>
+                                                <div className="bg-white p-12 shadow-xl mb-12 hidden md:block max-w-sm ml-auto mr-12 -mt-32 relative z-30">
+                                                    <p className="font-serif text-2xl text-brand-dark italic text-center">"Lose yourself in the wild."</p>
+                                                </div>
+                                                <SafeImage src="https://images.unsplash.com/photo-placeholder-1" alt="Serene Forest" queryTerm="serene nature forest" className="w-full h-[40vh] md:h-[60vh] object-cover rounded-sm shadow-lg" />
+                                            </div>
                                         </div>
-                                        <div className="break-inside-avoid relative group overflow-hidden rounded-xl shadow-md">
-                                            <SafeImage src="https://images.unsplash.com/photo-placeholder-1" alt="Serene Forest" queryTerm="serene nature forest" className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
-                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
-                                        </div>
-                                        <div className="break-inside-avoid relative group overflow-hidden rounded-xl shadow-md">
-                                            <SafeImage src="./NEIGHBOURHOOD/images.jpeg" alt="Chagga Village Coffee" queryTerm="chagga village coffee" className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
-                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
-                                        </div>
-                                        <div className="break-inside-avoid relative group overflow-hidden rounded-xl shadow-md">
-                                            <SafeImage src="https://images.unsplash.com/photo-placeholder-2" alt="Lush Environment" queryTerm="tanzania lush rainforest" className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
-                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
-                                        </div>
-                                        <div className="break-inside-avoid relative group overflow-hidden rounded-xl shadow-md">
-                                            <SafeImage src="https://images.unsplash.com/photo-placeholder-3" alt="Tanzania Waterfall" queryTerm="tanzania waterfall" className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
-                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 items-center mt-24 md:mt-48">
+                                            {/* Floating Right Image */}
+                                            <div className="md:col-span-6 md:col-start-7 relative z-10 reveal-on-scroll">
+                                                <SafeImage src="./NEIGHBOURHOOD/images.jpeg" alt="Chagga Village Coffee" queryTerm="chagga village coffee" className="w-full h-[50vh] md:h-[70vh] object-cover rounded-sm shadow-2xl" />
+                                            </div>
+
+                                            {/* Small Accent Image Left */}
+                                            <div className="md:col-span-4 md:col-start-2 relative md:-mt-64 z-20 reveal-on-scroll" style={{ transitionDelay: '0.4s' }}>
+                                                <SafeImage src="https://images.unsplash.com/photo-placeholder-2" alt="Lush Environment" queryTerm="tanzania lush rainforest" className="w-full h-[30vh] md:h-[50vh] object-cover rounded-sm shadow-xl" />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
