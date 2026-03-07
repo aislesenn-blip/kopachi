@@ -205,7 +205,7 @@
                 <div className="fixed inset-0 z-[100] bg-brand-dark/95 backdrop-blur-2xl overflow-y-auto fade-enter">
                     <div className="sticky top-0 left-0 right-0 h-24 bg-gradient-to-b from-brand-dark to-transparent flex items-center justify-between px-8 z-50">
                         <div className="text-white font-serif text-2xl tracking-widest uppercase text-brand-gold">The Sanctuary Vault</div>
-                        <button onClick={onClose} className="text-white/70 hover:text-white transition-colors bg-white/10 hover:bg-white/20 p-4 rounded-full backdrop-blur-md border border-white/20">
+                        <button type="button" onClick={onClose} className="text-white/70 hover:text-white transition-colors bg-white/10 hover:bg-white/20 p-4 rounded-full backdrop-blur-md border border-white/20">
                             <i data-lucide="x" className="w-6 h-6"></i>
                         </button>
                     </div>
@@ -224,31 +224,34 @@
         };
 
         // 2. Global UseScroll Reveal Hook
-        const useScrollReveal = () => {
+        const useScrollReveal = (deps = []) => {
             useEffect(() => {
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) entry.target.classList.add('animate-reveal');
-                    });
-                }, { threshold: 0.1 });
-                document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
-                return () => observer.disconnect();
-            }, []);
+                const timer = setTimeout(() => {
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) entry.target.classList.add('animate-reveal');
+                        });
+                    }, { threshold: 0.1 });
+                    document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+                    return () => observer.disconnect();
+                }, 100);
+                return () => clearTimeout(timer);
+            }, deps);
         };
 
         const KiruaDetailView = ({ data, onBack, onBook }) => {
             const [lightboxOpen, setLightboxOpen] = useState(false);
-            useScrollReveal();
+            useScrollReveal([]);
             useEffect(() => { window.scrollTo(0, 0); lucide.createIcons(); }, []);
 
             return (
                 <div className="bg-brand-cream min-h-screen fade-enter font-sans text-gray-800">
-                    {lightboxOpen && <MasonryGallery images={data.fullGallery} onClose={() => { setLightboxOpen(false); lucide.createIcons(); }} />}
+                    {lightboxOpen && <MasonryGallery images={data.fullGallery || data.gallery || []} onClose={() => { setLightboxOpen(false); lucide.createIcons(); }} />}
                     
                     <div className="h-screen relative flex items-center justify-center overflow-hidden">
                         <img src="./KIRUA/3K6D5655.JPG" alt="The Kirua Homestead" className="absolute inset-0 w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-black/40"></div>
-                        <button onClick={onBack} className="absolute top-8 left-8 bg-white/10 backdrop-blur-md text-white px-6 py-2 rounded-full flex items-center gap-2 hover:bg-white hover:text-black transition-all z-20 border border-white/20"><i data-lucide="arrow-left" className="w-5 h-5"></i> Back</button>
+                        <button type="button" onClick={onBack} className="absolute top-8 left-8 bg-white/10 backdrop-blur-md text-white px-6 py-2 rounded-full flex items-center gap-2 hover:bg-white hover:text-black transition-all z-20 border border-white/20"><i data-lucide="arrow-left" className="w-5 h-5"></i> Back</button>
                         <button type="button" onClick={() => setLightboxOpen(true)} className="absolute top-8 right-8 bg-white/10 backdrop-blur-md text-white px-8 py-3 rounded-full flex items-center gap-3 hover:bg-brand-gold hover:border-brand-gold hover:text-black transition-all z-20 border border-white/20 font-serif text-lg shadow-2xl"><i data-lucide="image" className="w-5 h-5"></i> Explore the Homestead</button>
                         <div className="relative z-10 text-center text-white px-4">
                             <h1 className="text-6xl md:text-8xl font-serif mb-6 leading-tight drop-shadow-2xl">{data.name}</h1>
@@ -283,7 +286,7 @@
                         </div>
                     </div>
 
-                    <div className="w-full h-[80vh] relative overflow-hidden my-12 bg-fixed bg-center bg-cover" style={{ backgroundImage: "url('./KIRUA/3K6D5597.JPG')" }}></div>
+                    <div className="w-full h-[80vh] relative overflow-hidden my-12 bg-fixed bg-center bg-cover" style={{ backgroundImage: "url('./KIRUA/3K6D5600.JPG')" }}></div>
 
                     <div className="container mx-auto px-6 py-32 grid grid-cols-1 lg:grid-cols-2 gap-24 items-start reveal-on-scroll">
                         <div>
@@ -303,7 +306,7 @@
                         <div className="lg:sticky lg:top-24 bg-white p-12 md:p-16 rounded-sm shadow-2xl border border-gray-100 w-full">
                             <h3 className="text-4xl md:text-5xl font-serif text-brand-dark mb-6">Don't Visit. Just Live.</h3>
                             <p className="text-gray-500 mb-12 text-xl font-light">Secure your stay in the Kirua Homestead. Traditional Chagga warmth meets modern luxury.</p>
-                            <button onClick={() => onBook(data)} className="w-full bg-brand-dark text-brand-gold py-6 font-serif text-2xl tracking-wider hover:bg-brand-gold hover:text-brand-dark transition-colors shadow-lg flex justify-center items-center gap-3">
+                            <button type="button" onClick={() => onBook(data)} className="w-full bg-brand-dark text-brand-gold py-6 font-serif text-2xl tracking-wider hover:bg-brand-gold hover:text-brand-dark transition-colors shadow-lg flex justify-center items-center gap-3">
                                 Check Availability <i data-lucide="arrow-right" className="w-6 h-6"></i>
                             </button>
                             <div className="mt-10 pt-10 border-t border-gray-200 text-center">
@@ -319,18 +322,18 @@
 
         const MaranguDetailView = ({ data, onBack, onBook }) => {
             const [lightboxOpen, setLightboxOpen] = useState(false);
-            useScrollReveal();
+            useScrollReveal([]);
             useEffect(() => { window.scrollTo(0, 0); lucide.createIcons(); }, []);
 
             return (
                 <div className="bg-brand-cream min-h-screen fade-enter font-sans text-gray-800">
-                    {lightboxOpen && <MasonryGallery images={data.fullGallery} onClose={() => { setLightboxOpen(false); lucide.createIcons(); }} />}
+                    {lightboxOpen && <MasonryGallery images={data.fullGallery || data.gallery || []} onClose={() => { setLightboxOpen(false); lucide.createIcons(); }} />}
                     
                     <div className="h-screen relative flex items-center justify-center overflow-hidden">
                         <img src="./images/3K6D5851.JPG" alt="The Marangu Sanctuary" className="absolute inset-0 w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-black/40"></div>
-                        <button onClick={onBack} className="absolute top-8 left-8 bg-white/10 backdrop-blur-md text-white px-6 py-2 rounded-full flex items-center gap-2 hover:bg-white hover:text-black transition-all z-20 border border-white/20"><i data-lucide="arrow-left" className="w-5 h-5"></i> Back</button>
-                        <button onClick={() => setLightboxOpen(true)} className="absolute top-8 right-8 bg-white/10 backdrop-blur-md text-white px-8 py-3 rounded-full flex items-center gap-3 hover:bg-brand-gold hover:border-brand-gold hover:text-black transition-all z-20 border border-white/20 font-serif text-lg shadow-2xl"><i data-lucide="image" className="w-5 h-5"></i> View Full Gallery</button>
+                        <button type="button" onClick={onBack} className="absolute top-8 left-8 bg-white/10 backdrop-blur-md text-white px-6 py-2 rounded-full flex items-center gap-2 hover:bg-white hover:text-black transition-all z-20 border border-white/20"><i data-lucide="arrow-left" className="w-5 h-5"></i> Back</button>
+                        <button type="button" onClick={() => setLightboxOpen(true)} className="absolute top-8 right-8 bg-white/10 backdrop-blur-md text-white px-8 py-3 rounded-full flex items-center gap-3 hover:bg-brand-gold hover:border-brand-gold hover:text-black transition-all z-20 border border-white/20 font-serif text-lg shadow-2xl"><i data-lucide="image" className="w-5 h-5"></i> View Full Gallery</button>
                         <div className="relative z-10 text-center text-white px-4">
                             <h1 className="text-6xl md:text-8xl font-serif mb-6 leading-tight drop-shadow-2xl">{data.name}</h1>
                             <p className="text-xl md:text-3xl font-light tracking-[0.2em] drop-shadow-md uppercase text-brand-gold">{data.tagline}</p>
@@ -384,11 +387,11 @@
                         <div className="lg:sticky lg:top-24 bg-white p-12 md:p-16 rounded-sm shadow-2xl border border-gray-100 w-full">
                             <h3 className="text-4xl md:text-5xl font-serif text-brand-dark mb-6">Live the Legacy</h3>
                             <p className="text-gray-500 mb-12 text-xl font-light">Secure your sanctuary on the slopes of Kilimanjaro. Dedicated power, premium amenities, authentic living.</p>
-                            <button onClick={() => onBook(data)} className="w-full bg-brand-dark text-brand-gold py-6 font-serif text-2xl tracking-wider hover:bg-brand-gold hover:text-brand-dark transition-colors shadow-lg flex justify-center items-center gap-3">
+                            <button type="button" onClick={() => onBook(data)} className="w-full bg-brand-dark text-brand-gold py-6 font-serif text-2xl tracking-wider hover:bg-brand-gold hover:text-brand-dark transition-colors shadow-lg flex justify-center items-center gap-3">
                                 Reserve Now <i data-lucide="arrow-right" className="w-6 h-6"></i>
                             </button>
                             <div className="mt-10 pt-10 border-t border-gray-200 text-center">
-                                <button onClick={() => setLightboxOpen(true)} className="text-brand-earth hover:text-brand-dark transition-colors font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 w-full">
+                                <button type="button" onClick={() => setLightboxOpen(true)} className="text-brand-earth hover:text-brand-dark transition-colors font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 w-full">
                                     <i data-lucide="grid" className="w-4 h-4"></i> View Full Gallery
                                 </button>
                             </div>
@@ -400,17 +403,17 @@
 
         const DetailView = ({ data, onBack, onBook }) => {
             const [lightboxOpen, setLightboxOpen] = useState(false);
-            useScrollReveal();
+            useScrollReveal([]);
             useEffect(() => { window.scrollTo(0, 0); lucide.createIcons(); }, []);
             
             return (
                 <div className="bg-brand-cream min-h-screen fade-enter">
-                    {lightboxOpen && <MasonryGallery images={data.gallery} onClose={() => { setLightboxOpen(false); lucide.createIcons(); }} />}
+                    {lightboxOpen && <MasonryGallery images={data.gallery || data.fullGallery || []} onClose={() => { setLightboxOpen(false); lucide.createIcons(); }} />}
                     
                     <div className="h-[80vh] relative">
                         <SafeImage src={data.cover} alt={data.name} queryTerm={data.query || data.name} className="w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-black/40 to-transparent"></div>
-                        <button onClick={onBack} className="absolute top-8 left-8 bg-white/10 backdrop-blur-md text-white px-6 py-2 rounded-full flex items-center gap-2 hover:bg-white hover:text-black transition-all z-20 border border-white/20"><i data-lucide="arrow-left" className="w-5 h-5"></i> Back</button>
+                        <button type="button" onClick={onBack} className="absolute top-8 left-8 bg-white/10 backdrop-blur-md text-white px-6 py-2 rounded-full flex items-center gap-2 hover:bg-white hover:text-black transition-all z-20 border border-white/20"><i data-lucide="arrow-left" className="w-5 h-5"></i> Back</button>
                         <div className="absolute bottom-16 left-6 md:left-16 text-white max-w-5xl">
                             <span className="bg-brand-gold text-brand-dark px-4 py-1 text-sm font-bold uppercase tracking-widest mb-6 inline-block rounded-sm">{data.type === 'project' ? "Impact Initiative" : "Expedition"}</span>
                             <h1 className="text-5xl md:text-8xl font-serif mb-6 leading-none drop-shadow-xl">{data.name}</h1>
@@ -457,11 +460,11 @@
                             <div className="sticky top-24 bg-white p-12 rounded-sm shadow-2xl border border-gray-100">
                                 <h3 className="text-4xl font-serif text-brand-dark mb-4">Secure Your Spot.</h3>
                                 <p className="text-gray-500 mb-10 text-lg font-light">Customizable dates, private expert guides, and fully immersive logistics handled by Kopachi.</p>
-                                <button onClick={() => onBook(data)} className="w-full bg-brand-dark text-brand-gold py-6 font-serif text-2xl hover:bg-brand-gold hover:text-brand-dark transition-colors shadow-xl mb-8 flex justify-center items-center gap-3">
+                                <button type="button" onClick={() => onBook(data)} className="w-full bg-brand-dark text-brand-gold py-6 font-serif text-2xl hover:bg-brand-gold hover:text-brand-dark transition-colors shadow-xl mb-8 flex justify-center items-center gap-3">
                                     Request Quote <i data-lucide="arrow-right" className="w-6 h-6"></i>
                                 </button>
                                 <div className="border-t border-gray-200 pt-8 text-center">
-                                     <button onClick={() => setLightboxOpen(true)} className="text-brand-earth hover:text-brand-dark transition-colors font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 w-full">
+                                     <button type="button" onClick={() => setLightboxOpen(true)} className="text-brand-earth hover:text-brand-dark transition-colors font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 w-full">
                                         <i data-lucide="grid" className="w-4 h-4"></i> View Gallery
                                     </button>
                                 </div>
@@ -478,7 +481,7 @@
             const [modalOpen, setModalOpen] = useState(false);
             const [modalItem, setModalItem] = useState(null);
 
-            useScrollReveal();
+            useScrollReveal([view]);
             useEffect(() => { lucide.createIcons(); });
 
             const handleSelect = (item) => { setActiveData(item); setView('detail'); };
@@ -495,8 +498,8 @@
                                     <h1 className="text-7xl md:text-[10rem] font-serif mb-2 tracking-tighter drop-shadow-2xl">KOPACHI.</h1>
                                     <p className="text-xl md:text-3xl font-light tracking-[0.2em] uppercase mt-4 mb-12 drop-shadow-md text-brand-gold">Live. Explore. Impact.</p>
                                     <div className="flex flex-col md:flex-row gap-6 justify-center items-center w-full max-w-3xl mx-auto">
-                                        <button onClick={() => document.getElementById('destinations').scrollIntoView({behavior:'smooth'})} className="w-full md:w-auto bg-brand-gold text-brand-dark px-10 py-5 rounded-full font-bold text-lg md:text-xl hover:bg-white transition-all transform hover:scale-105 shadow-2xl flex-1">I Want to Explore</button>
-                                        <button onClick={() => document.getElementById('impact').scrollIntoView({behavior:'smooth'})} className="w-full md:w-auto border-2 border-white text-white px-10 py-5 rounded-full font-bold text-lg md:text-xl hover:bg-white hover:text-brand-dark transition-all backdrop-blur-sm shadow-xl flex-1">I Want to Volunteer</button>
+                                        <button type="button" onClick={() => document.getElementById('destinations').scrollIntoView({behavior:'smooth'})} className="w-full md:w-auto bg-brand-gold text-brand-dark px-10 py-5 rounded-full font-bold text-lg md:text-xl hover:bg-white transition-all transform hover:scale-105 shadow-2xl flex-1">I Want to Explore</button>
+                                        <button type="button" onClick={() => document.getElementById('impact').scrollIntoView({behavior:'smooth'})} className="w-full md:w-auto border-2 border-white text-white px-10 py-5 rounded-full font-bold text-lg md:text-xl hover:bg-white hover:text-brand-dark transition-all backdrop-blur-sm shadow-xl flex-1">I Want to Volunteer</button>
                                     </div>
                                     <p onClick={openKirua} className="mt-12 text-white/80 text-sm md:text-base cursor-pointer hover:text-brand-gold transition-colors border-b border-transparent hover:border-brand-gold inline-block pb-1 drop-shadow-sm">Or just looking for a home? Click here.</p>
                                 </div>
@@ -629,7 +632,7 @@
                                                     <h3 className="text-3xl font-serif mb-4">{proj.name}</h3>
                                                     <p className="text-brand-gold mb-6 uppercase tracking-widest text-sm font-bold">{proj.location} • {proj.duration}</p>
                                                     <p className="text-gray-400 text-lg line-clamp-3 font-light leading-relaxed">{proj.desc}</p>
-                                                    <button className="mt-8 text-brand-brick font-bold uppercase text-sm tracking-[0.2em] group-hover:text-white transition-colors flex items-center gap-2">View Initiative <i data-lucide="arrow-right" className="w-4 h-4"></i></button>
+                                                    <button type="button" className="mt-8 text-brand-brick font-bold uppercase text-sm tracking-[0.2em] group-hover:text-white transition-colors flex items-center gap-2">View Initiative <i data-lucide="arrow-right" className="w-4 h-4"></i></button>
                                                 </div>
                                             </div>
                                         ))}
@@ -654,7 +657,7 @@
                     {modalOpen && (
                         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-brand-dark/95 backdrop-blur-xl fade-enter" onClick={() => setModalOpen(false)}>
                             <div className="bg-white w-full max-w-2xl rounded-sm p-12 md:p-16 relative" onClick={e => e.stopPropagation()}>
-                                <button onClick={() => setModalOpen(false)} className="absolute top-8 right-8 text-gray-400 hover:text-brand-dark transition-colors"><i data-lucide="x" className="w-8 h-8"></i></button>
+                                <button type="button" onClick={() => setModalOpen(false)} className="absolute top-8 right-8 text-gray-400 hover:text-brand-dark transition-colors"><i data-lucide="x" className="w-8 h-8"></i></button>
                                 <h3 className="text-4xl font-serif text-brand-dark mb-2">{modalItem.id === 'kirua-homestead' ? "Karibu Nyumbani" : "Begin Your Journey"}</h3>
                                 <p className="text-brand-earth font-bold mb-10 text-xl tracking-widest uppercase">{modalItem.name}</p>
                                 <form className="space-y-6">
@@ -672,7 +675,7 @@
                                             <input type="number" placeholder="Guests" className="bg-gray-50 border border-gray-200 p-5 rounded-sm text-lg" />
                                         </div>
                                     )}
-                                    <button className="w-full bg-brand-dark text-brand-gold py-6 rounded-sm font-serif text-2xl tracking-wider hover:bg-brand-gold hover:text-brand-dark transition-colors mt-4 shadow-xl">Send Request</button>
+                                    <button type="submit" className="w-full bg-brand-dark text-brand-gold py-6 rounded-sm font-serif text-2xl tracking-wider hover:bg-brand-gold hover:text-brand-dark transition-colors mt-4 shadow-xl">Send Request</button>
                                 </form>
                             </div>
                         </div>
