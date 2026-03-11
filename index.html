@@ -102,7 +102,7 @@
         };
 
         // --- INTELLIGENT SAFE IMAGE WITH API BLEND ---
-        const SafeImage = ({ src, alt, className, queryTerm = "tanzania nature" }) => {
+        const SafeImage = ({ src, alt, className, queryTerm = "tanzania nature", onClick }) => {
             const [imgSrc, setImgSrc] = useState(src || `https://source.unsplash.com/random/800x600/?${encodeURIComponent(queryTerm)}`);
 
             const fetchReplacement = () => {
@@ -112,12 +112,11 @@
                     .catch(() => { /* Silent Fail */ });
             };
 
-            // If no source is provided at all, immediately fetch from Unsplash
             useEffect(() => {
                 if (!src) fetchReplacement();
             }, [src]);
 
-            return <img src={imgSrc} alt={alt} className={className} onError={fetchReplacement} loading="lazy" />;
+            return <img src={imgSrc} alt={alt} className={className} onError={fetchReplacement} loading="lazy" onClick={onClick} />;
         };
 
         // --- ELITE DATA SECTION ---
@@ -189,18 +188,65 @@
             }
         ];
 
+        const neighbourhoodImages = [
+            "./KIRUA/3K6D5636.JPG",
+            "./KIRUA/3K6D5644.JPG",
+            "./KIRUA/3K6D5642.JPG",
+            "./KIRUA/3K6D5639.JPG",
+            "./KIRUA/3K6D5646.JPG"
+        ];
+
         // --- COMPONENTS ---
         
-        // 1. Fullscreen Masonry Vault
+        // 1. World-Class Interactive Gallery (Masonry + Fullscreen Slider)
         const MasonryGallery = ({ images, onClose }) => {
+            const [selectedIndex, setSelectedIndex] = useState(null);
+
             useEffect(() => {
                 lucide.createIcons();
-                const handleKeyDown = (e) => { if (e.key === 'Escape') onClose(); };
+                const handleKeyDown = (e) => { 
+                    if (e.key === 'Escape') {
+                        if (selectedIndex !== null) setSelectedIndex(null);
+                        else onClose();
+                    }
+                    if (selectedIndex !== null) {
+                        if (e.key === 'ArrowRight') setSelectedIndex(prev => (prev + 1) % images.length);
+                        if (e.key === 'ArrowLeft') setSelectedIndex(prev => (prev === 0 ? images.length - 1 : prev - 1));
+                    }
+                };
                 window.addEventListener('keydown', handleKeyDown);
                 document.body.style.overflow = 'hidden';
                 return () => { window.removeEventListener('keydown', handleKeyDown); document.body.style.overflow = 'auto'; };
-            }, [onClose]);
+            }, [onClose, selectedIndex, images.length]);
 
+            // Single Image Lightbox Mode
+            if (selectedIndex !== null) {
+                return (
+                    <div className="fixed inset-0 z-[300] bg-black flex items-center justify-center fade-enter" onClick={() => setSelectedIndex(null)}>
+                        <button type="button" onClick={(e) => { e.stopPropagation(); setSelectedIndex(null); }} className="absolute top-8 right-8 text-white/70 hover:text-white transition-colors z-50 bg-black/50 p-3 rounded-full">
+                            <i data-lucide="x" className="w-8 h-8"></i>
+                        </button>
+                        
+                        <button type="button" onClick={(e) => { e.stopPropagation(); setSelectedIndex(prev => (prev === 0 ? images.length - 1 : prev - 1)); }} className="absolute left-4 md:left-12 text-white/50 hover:text-white transition-colors z-50 p-4 bg-black/20 hover:bg-black/50 rounded-full">
+                            <i data-lucide="chevron-left" className="w-10 h-10"></i>
+                        </button>
+                        
+                        <div className="relative max-w-7xl max-h-screen p-4 flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+                            <img src={images[selectedIndex]} alt="Gallery Image" className="max-w-full max-h-[90vh] object-contain shadow-2xl" />
+                        </div>
+
+                        <button type="button" onClick={(e) => { e.stopPropagation(); setSelectedIndex(prev => (prev + 1) % images.length); }} className="absolute right-4 md:right-12 text-white/50 hover:text-white transition-colors z-50 p-4 bg-black/20 hover:bg-black/50 rounded-full">
+                            <i data-lucide="chevron-right" className="w-10 h-10"></i>
+                        </button>
+
+                        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/70 tracking-[0.2em] font-serif text-lg bg-black/50 px-6 py-2 rounded-full">
+                            {selectedIndex + 1} / {images.length}
+                        </div>
+                    </div>
+                );
+            }
+
+            // Masonry Vault Mode
             return (
                 <div className="fixed inset-0 z-[100] bg-brand-dark/95 backdrop-blur-2xl overflow-y-auto fade-enter">
                     <div className="sticky top-0 left-0 right-0 h-24 bg-gradient-to-b from-brand-dark to-transparent flex items-center justify-between px-8 z-50">
@@ -212,9 +258,12 @@
                     <div className="container mx-auto px-4 pb-32 pt-8">
                         <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
                             {images.map((src, index) => (
-                                <div key={index} className="break-inside-avoid relative group overflow-hidden rounded-md bg-white/5">
+                                <div key={index} onClick={() => setSelectedIndex(index)} className="break-inside-avoid relative group overflow-hidden rounded-md bg-white/5 cursor-pointer shadow-lg">
                                     <SafeImage src={src} alt={`Vault Image ${index + 1}`} className="w-full h-auto object-cover opacity-90 group-hover:opacity-100 transition-transform duration-1000 group-hover:scale-[1.03]" />
-                                    <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
+                                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500"></div>
+                                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                        <i data-lucide="maximize-2" className="w-10 h-10 text-white drop-shadow-md"></i>
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -232,7 +281,10 @@
                             if (entry.isIntersecting) entry.target.classList.add('animate-reveal');
                         });
                     }, { threshold: 0.1 });
-                    document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+                    document.querySelectorAll('.reveal-on-scroll').forEach(el => {
+                        el.classList.remove('animate-reveal'); // Reset for perfect re-mounting
+                        observer.observe(el);
+                    });
                     return () => observer.disconnect();
                 }, 100);
                 return () => clearTimeout(timer);
@@ -286,7 +338,8 @@
                         </div>
                     </div>
 
-                    <div className="w-full h-[80vh] relative overflow-hidden my-12 bg-fixed bg-center bg-cover" style={{ backgroundImage: "url('./KIRUA/3K6D5600.JPG')" }}></div>
+                    {/* CORRECTED IMAGE FOR THE SPACE (3K6D5610.JPG) */}
+                    <div className="w-full h-[80vh] relative overflow-hidden my-12 bg-fixed bg-center bg-cover" style={{ backgroundImage: "url('./KIRUA/3K6D5610.JPG')" }}></div>
 
                     <div className="container mx-auto px-6 py-32 grid grid-cols-1 lg:grid-cols-2 gap-24 items-start reveal-on-scroll">
                         <div>
@@ -480,6 +533,7 @@
             const [activeData, setActiveData] = useState(null);
             const [modalOpen, setModalOpen] = useState(false);
             const [modalItem, setModalItem] = useState(null);
+            const [nhGalleryOpen, setNhGalleryOpen] = useState(false);
 
             useScrollReveal([view]);
             useEffect(() => { lucide.createIcons(); });
@@ -490,9 +544,12 @@
 
             return (
                 <div className="antialiased text-gray-800 font-sans">
+                    {/* Fullscreen Neighbourhood Gallery Injection */}
+                    {nhGalleryOpen && <MasonryGallery images={neighbourhoodImages} onClose={() => { setNhGalleryOpen(false); lucide.createIcons(); }} />}
+
                     {view === 'home' ? (
                         <div className="fade-enter">
-                            {/* SMART HERO: Mobile Optimized Buttons */}
+                            {/* SMART HERO */}
                             <SmartHero>
                                 <div className="text-center text-white px-4">
                                     <h1 className="text-7xl md:text-[10rem] font-serif mb-2 tracking-tighter drop-shadow-2xl">KOPACHI.</h1>
@@ -505,7 +562,7 @@
                                 </div>
                             </SmartHero>
 
-                            {/* MANIFESTO (py-32 applied) */}
+                            {/* MANIFESTO */}
                             <div id="manifesto" className="bg-brand-green text-white py-32 md:py-40 px-6 relative overflow-hidden">
                                 <div className="container mx-auto text-center max-w-6xl relative z-10 reveal-on-scroll">
                                     <h2 className="text-4xl md:text-7xl font-serif mb-16 leading-tight">
@@ -555,7 +612,7 @@
                                 </div>
                             </div>
 
-                            {/* THE NEIGHBOURHOOD RESTORED (Elite Standard) */}
+                            {/* THE NEIGHBOURHOOD RESTORED & UPGRADED */}
                             <div id="neighbourhood" className="py-32 md:py-40 bg-brand-dark text-white relative">
                                 <div className="container mx-auto px-6 max-w-6xl mb-20 text-center reveal-on-scroll">
                                     <h2 className="text-5xl md:text-7xl font-serif mb-8 text-brand-gold">Beyond the Walls</h2>
@@ -564,30 +621,39 @@
                                     </p>
                                 </div>
                                 
-                                {/* Massive Parallax Hero */}
                                 <div className="w-full h-[70vh] bg-fixed bg-center bg-cover relative mb-24" style={{ backgroundImage: "url('./NEIGHBOURHOOD/Exploring-Tanzanias-Hidden-Waterfalls-2.jpg')" }}>
                                     <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent"></div>
                                 </div>
 
-                                {/* Asymmetrical Bento Grid */}
+                                {/* NEW: Elite Bento Grid for Neighbourhood Images */}
                                 <div className="container mx-auto px-6 max-w-7xl reveal-on-scroll">
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-stretch">
-                                        <div className="md:col-span-2 h-[50vh] md:h-[60vh] overflow-hidden rounded-sm group relative">
-                                            <img src="./NEIGHBOURHOOD/e7.jpg" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Local Nature" />
+                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 h-[80vh]">
+                                        {/* Img 1: Large Left */}
+                                        <div onClick={() => setNhGalleryOpen(true)} className="md:col-span-2 md:row-span-2 overflow-hidden rounded-sm group relative cursor-pointer shadow-2xl">
+                                            <img src="./KIRUA/3K6D5636.JPG" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Neighbourhood 1" />
                                             <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
                                         </div>
-                                        <div className="h-[50vh] md:h-[60vh] overflow-hidden rounded-sm group relative">
-                                            <SafeImage queryTerm="tanzania coffee lush" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Coffee Farms" />
+                                        {/* Img 2: Top Right Wide */}
+                                        <div onClick={() => setNhGalleryOpen(true)} className="md:col-span-2 md:row-span-1 overflow-hidden rounded-sm group relative cursor-pointer shadow-lg">
+                                            <img src="./KIRUA/3K6D5644.JPG" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Neighbourhood 2" />
                                             <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
                                         </div>
-                                        <div className="h-[50vh] md:h-[70vh] overflow-hidden rounded-sm group relative">
-                                            <img src="./NEIGHBOURHOOD/images.jpeg" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Local Culture" />
+                                        {/* Img 3: Bottom Middle */}
+                                        <div onClick={() => setNhGalleryOpen(true)} className="md:col-span-1 md:row-span-1 overflow-hidden rounded-sm group relative cursor-pointer shadow-lg">
+                                            <img src="./KIRUA/3K6D5642.JPG" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Neighbourhood 3" />
                                             <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
                                         </div>
-                                        <div className="md:col-span-2 h-[50vh] md:h-[70vh] overflow-hidden rounded-sm group relative">
-                                            <SafeImage queryTerm="serene nature forest waterfall" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Serene Nature" />
+                                        {/* Img 4: Bottom Right */}
+                                        <div onClick={() => setNhGalleryOpen(true)} className="md:col-span-1 md:row-span-1 overflow-hidden rounded-sm group relative cursor-pointer shadow-lg">
+                                            <img src="./KIRUA/3K6D5639.JPG" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Neighbourhood 4" />
                                             <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
                                         </div>
+                                    </div>
+                                    {/* Explore Button for 5th Image & All */}
+                                    <div className="text-center mt-12">
+                                        <button type="button" onClick={() => setNhGalleryOpen(true)} className="text-brand-gold hover:text-white transition-colors font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 w-full">
+                                            <i data-lucide="grid" className="w-4 h-4"></i> View Neighbourhood Gallery
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -655,12 +721,12 @@
                     </footer>
 
                     {modalOpen && (
-                        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-brand-dark/95 backdrop-blur-xl fade-enter" onClick={() => setModalOpen(false)}>
+                        <div className="fixed inset-0 z-[400] flex items-center justify-center p-4 bg-brand-dark/95 backdrop-blur-xl fade-enter" onClick={() => setModalOpen(false)}>
                             <div className="bg-white w-full max-w-2xl rounded-sm p-12 md:p-16 relative" onClick={e => e.stopPropagation()}>
                                 <button type="button" onClick={() => setModalOpen(false)} className="absolute top-8 right-8 text-gray-400 hover:text-brand-dark transition-colors"><i data-lucide="x" className="w-8 h-8"></i></button>
                                 <h3 className="text-4xl font-serif text-brand-dark mb-2">{modalItem.id === 'kirua-homestead' ? "Karibu Nyumbani" : "Begin Your Journey"}</h3>
                                 <p className="text-brand-earth font-bold mb-10 text-xl tracking-widest uppercase">{modalItem.name}</p>
-                                <form className="space-y-6">
+                                <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
                                     <input type="text" placeholder="Full Name" className="w-full bg-gray-50 border border-gray-200 p-5 rounded-sm focus:outline-none focus:border-brand-gold text-lg" />
                                     <input type="email" placeholder="Email Address" className="w-full bg-gray-50 border border-gray-200 p-5 rounded-sm focus:outline-none focus:border-brand-gold text-lg" />
                                     {modalItem.id === 'kirua-homestead' ? (
