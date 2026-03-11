@@ -138,7 +138,8 @@
                 gallery: ["./images/3K6D5851.JPG", "./images/3K6D5858.JPG", "./images/3K6D5864.JPG", "./images/3K6D5868.JPG", "./images/3K6D5872.JPG"],
                 fullGallery: [
                     "./images/3K6D5825.JPG", "./images/3K6D5829.JPG", "./images/3K6D5830.JPG", "./images/3K6D5833.JPG", "./images/3K6D5837.JPG",
-                    "./images/3K6D5841.JPG", "./images/3K6D5844.JPG", "./images/3K6D5848.JPG", "./images/3K6D5851.JPG", "./images/3K6D5853.JPG"
+                    "./images/3K6D5841.JPG", "./images/3K6D5844.JPG", "./images/3K6D5848.JPG", "./images/3K6D5851.JPG", "./images/3K6D5853.JPG",
+                    "./images/3K6D5858.JPG", "./images/3K6D5864.JPG", "./images/3K6D5868.JPG", "./images/3K6D5872.JPG"
                 ]
             }
         ];
@@ -201,7 +202,8 @@
         // 1. World-Class Interactive Gallery (Masonry + Fullscreen Slider)
         const MasonryGallery = ({ images, onClose, initialIndex = null }) => {
             const [selectedIndex, setSelectedIndex] = useState(initialIndex);
-            // state updated
+            // safe images array to prevent crashes
+            const safeImages = Array.isArray(images) ? images : [];
 
             useEffect(() => {
                 lucide.createIcons();
@@ -210,22 +212,22 @@
                         if (selectedIndex !== null) setSelectedIndex(null);
                         else onClose();
                     }
-                    if (selectedIndex !== null) {
-                        if (e.key === 'ArrowRight') setSelectedIndex(prev => (prev + 1) % images.length);
-                        if (e.key === 'ArrowLeft') setSelectedIndex(prev => (prev === 0 ? images.length - 1 : prev - 1));
+                    if (selectedIndex !== null && safeImages.length > 0) {
+                        if (e.key === 'ArrowRight') setSelectedIndex(prev => (prev + 1) % safeImages.length);
+                        if (e.key === 'ArrowLeft') setSelectedIndex(prev => (prev === 0 ? safeImages.length - 1 : prev - 1));
                     }
                 };
                 window.addEventListener('keydown', handleKeyDown);
                 document.body.style.overflow = 'hidden';
                 return () => { window.removeEventListener('keydown', handleKeyDown); document.body.style.overflow = 'auto'; };
-            }, [onClose, selectedIndex, images.length]);
+            }, [onClose, selectedIndex, safeImages.length]);
 
             useEffect(() => {
                 lucide.createIcons();
             }, [selectedIndex]);
 
             // SINGLE IMAGE LIGHTBOX MODE
-            if (selectedIndex !== null) {
+            if (selectedIndex !== null && safeImages[selectedIndex]) {
                 return (
                     <div className="fixed inset-0 z-[500] bg-brand-dark/95 backdrop-blur-3xl flex flex-col items-center justify-center fade-enter" onClick={() => setSelectedIndex(null)}>
                         <div className="absolute top-0 left-0 right-0 h-24 flex items-center justify-between px-6 md:px-12 z-50 bg-gradient-to-b from-black/80 to-transparent">
@@ -235,23 +237,27 @@
                             </button>
                         </div>
                         
-                        <button type="button" onClick={(e) => { e.stopPropagation(); setSelectedIndex(prev => (prev === 0 ? images.length - 1 : prev - 1)); }} className="absolute left-4 md:left-12 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors z-50 p-6 bg-black/40 hover:bg-black/80 rounded-full">
+                        <button type="button" onClick={(e) => { e.stopPropagation(); setSelectedIndex(prev => (prev === 0 ? safeImages.length - 1 : prev - 1)); }} className="absolute left-4 md:left-12 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors z-50 p-6 bg-black/40 hover:bg-black/80 rounded-full">
                             <i data-lucide="chevron-left" className="w-12 h-12"></i>
                         </button>
                         
                         <div className="relative w-screen h-screen max-w-none max-h-none p-0 flex items-center justify-center mt-0" onClick={(e) => e.stopPropagation()}>
-                            <img src={images[selectedIndex]} alt={`Gallery View ${selectedIndex}`} className="max-w-full max-h-full object-contain shadow-2xl rounded-sm transition-opacity duration-500" />
+                            <img src={safeImages[selectedIndex]} alt={`Gallery View ${selectedIndex}`} className="max-w-full max-h-full object-contain shadow-2xl rounded-sm transition-opacity duration-500" />
                             {/* Preload adjacent images for fast navigation */}
-                            <link rel="preload" as="image" href={images[(selectedIndex + 1) % images.length]} />
-                            <link rel="preload" as="image" href={images[selectedIndex === 0 ? images.length - 1 : selectedIndex - 1]} />
+                            {safeImages.length > 1 && (
+                                <>
+                                    <link rel="preload" as="image" href={safeImages[(selectedIndex + 1) % safeImages.length]} />
+                                    <link rel="preload" as="image" href={safeImages[selectedIndex === 0 ? safeImages.length - 1 : selectedIndex - 1]} />
+                                </>
+                            )}
                         </div>
 
-                        <button type="button" onClick={(e) => { e.stopPropagation(); setSelectedIndex(prev => (prev + 1) % images.length); }} className="absolute right-4 md:right-12 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors z-50 p-6 bg-black/40 hover:bg-black/80 rounded-full">
+                        <button type="button" onClick={(e) => { e.stopPropagation(); setSelectedIndex(prev => (prev + 1) % safeImages.length); }} className="absolute right-4 md:right-12 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors z-50 p-6 bg-black/40 hover:bg-black/80 rounded-full">
                             <i data-lucide="chevron-right" className="w-12 h-12"></i>
                         </button>
 
                         <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-brand-gold tracking-[0.3em] font-sans text-xl font-bold bg-black/60 px-10 py-4 rounded-full border border-white/10 shadow-xl">
-                            {selectedIndex + 1} / {images.length}
+                            {selectedIndex + 1} / {safeImages.length}
                         </div>
                     </div>
                 );
@@ -268,7 +274,7 @@
                     </div>
                     <div className="container mx-auto px-6 pb-32 pt-12">
                         <div className="columns-1 sm:columns-2 lg:columns-3 gap-24 space-y-8">
-                            {images.map((src, index) => (
+                            {safeImages.map((src, index) => (
                                 <div key={index} onClick={() => setSelectedIndex(index)} className="break-inside-avoid relative group overflow-hidden rounded-md bg-white/5 cursor-pointer shadow-lg">
                                     <SafeImage src={src} alt={`Vault Image ${index + 1}`} className="w-full h-auto object-cover opacity-90 group-hover:opacity-100 transition-transform duration-1000 group-hover:scale-[1.03]" />
                                     <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500"></div>
@@ -336,11 +342,15 @@
 
                     <div className="container mx-auto px-12 py-16">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-24 items-center">
-                            <div className="w-full h-[80vh] md:h-[85vh] md:-mt-32 reveal-on-scroll overflow-hidden rounded-sm group">
+                            <div className="w-full h-[80vh] md:h-[85vh] md:-mt-32 reveal-on-scroll overflow-hidden rounded-sm group relative cursor-pointer" onClick={() => setLightboxOpen(0)}>
                                 <img src="./KIRUA/3K6D5582.JPG" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500"><div className="bg-brand-dark/60 text-white p-6 rounded-full backdrop-blur-sm"><i data-lucide="maximize-2" className="w-10 h-10"></i></div></div>
                             </div>
-                            <div className="w-full h-[70vh] md:h-[75vh] md:ml-16 md:mt-32 reveal-on-scroll overflow-hidden rounded-sm group" style={{ transitionDelay: '0.2s' }}>
+                            <div className="w-full h-[70vh] md:h-[75vh] md:ml-16 md:mt-32 reveal-on-scroll overflow-hidden rounded-sm group relative cursor-pointer" style={{ transitionDelay: '0.2s' }} onClick={() => setLightboxOpen(4)}>
                                 <img src="./KIRUA/3K6D5600.JPG" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500"><div className="bg-brand-dark/60 text-white p-6 rounded-full backdrop-blur-sm"><i data-lucide="maximize-2" className="w-10 h-10"></i></div></div>
                             </div>
                         </div>
                     </div>
@@ -355,7 +365,10 @@
                     </div>
 
                     {/* FIXED: Parallax Image for The Space is now 3K6D5610.JPG */}
-                    <div className="w-full h-[85vh] relative overflow-hidden my-16 bg-fixed bg-center bg-cover" style={{ backgroundImage: "url('./KIRUA/3K6D5610.JPG')" }}></div>
+                    <div className="w-full h-[85vh] relative overflow-hidden my-16 bg-fixed bg-center bg-cover group cursor-pointer" style={{ backgroundImage: "url('./KIRUA/3K6D5610.JPG')" }} onClick={() => setLightboxOpen(7)}>
+                        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500"><div className="bg-brand-dark/60 text-white p-6 rounded-full backdrop-blur-sm"><i data-lucide="maximize-2" className="w-10 h-10"></i></div></div>
+                    </div>
 
                     <div className="container mx-auto px-12 py-48 md:py-48 grid grid-cols-1 lg:grid-cols-2 gap-32 items-start reveal-on-scroll">
                         <div>
@@ -364,7 +377,11 @@
                                 "Live the Unrushed Life. Spend your days hiking to hidden waterfalls, wandering through vibrant local markets, or learning the art of coffee roasting from the village elders. As evening approaches, gather around the fire to share stories and a warm plate of traditional 'Machalari'. This is authentic, unfiltered Tanzania."
                             </p>
                             <div className="grid grid-cols-2 gap-24 h-[45vh]">
-                                <div className="overflow-hidden rounded-sm group"><img src="./KIRUA/3K6D5601.JPG" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" /></div>
+                                <div className="overflow-hidden rounded-sm group relative cursor-pointer" onClick={() => setLightboxOpen(5)}>
+                                    <img src="./KIRUA/3K6D5601.JPG" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+                                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500"><div className="bg-brand-dark/60 text-white p-6 rounded-full backdrop-blur-sm"><i data-lucide="maximize-2" className="w-10 h-10"></i></div></div>
+                                </div>
                                 <div className="bg-brand-green text-white p-10 flex flex-col justify-center items-center text-center rounded-sm">
                                     <i data-lucide="sun" className="w-16 h-16 mb-8 text-brand-gold"></i>
                                     <p className="font-serif text-3xl">Breathe the Mountain.</p>
@@ -416,11 +433,15 @@
 
                     <div className="container mx-auto px-12 py-16">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-24 items-center">
-                            <div className="w-full h-[80vh] md:h-[85vh] md:-mt-32 reveal-on-scroll overflow-hidden rounded-sm group">
+                            <div className="w-full h-[80vh] md:h-[85vh] md:-mt-32 reveal-on-scroll overflow-hidden rounded-sm group relative cursor-pointer" onClick={() => setLightboxOpen(10)}>
                                 <img src="./images/3K6D5858.JPG" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500"><div className="bg-brand-dark/60 text-white p-6 rounded-full backdrop-blur-sm"><i data-lucide="maximize-2" className="w-10 h-10"></i></div></div>
                             </div>
-                            <div className="w-full h-[70vh] md:h-[75vh] md:ml-16 md:mt-32 reveal-on-scroll overflow-hidden rounded-sm group" style={{ transitionDelay: '0.2s' }}>
+                            <div className="w-full h-[70vh] md:h-[75vh] md:ml-16 md:mt-32 reveal-on-scroll overflow-hidden rounded-sm group relative cursor-pointer" style={{ transitionDelay: '0.2s' }} onClick={() => setLightboxOpen(11)}>
                                 <img src="./images/3K6D5864.JPG" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500"><div className="bg-brand-dark/60 text-white p-6 rounded-full backdrop-blur-sm"><i data-lucide="maximize-2" className="w-10 h-10"></i></div></div>
                             </div>
                         </div>
                     </div>
@@ -434,7 +455,10 @@
                         </div>
                     </div>
 
-                    <div className="w-full h-[85vh] relative overflow-hidden my-16 bg-fixed bg-center bg-cover" style={{ backgroundImage: "url('./images/3K6D5868.JPG')" }}></div>
+                    <div className="w-full h-[85vh] relative overflow-hidden my-16 bg-fixed bg-center bg-cover group cursor-pointer" style={{ backgroundImage: "url('./images/3K6D5868.JPG')" }} onClick={() => setLightboxOpen(12)}>
+                        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500"><div className="bg-brand-dark/60 text-white p-6 rounded-full backdrop-blur-sm"><i data-lucide="maximize-2" className="w-10 h-10"></i></div></div>
+                    </div>
 
                     <div className="container mx-auto px-12 py-48 md:py-48 grid grid-cols-1 lg:grid-cols-2 gap-32 items-start reveal-on-scroll">
                         <div>
@@ -443,7 +467,11 @@
                                 "A Rhythm Dictated by the Sun. Step outside your door and wander through ancient coffee farms. Listen to the distant roar of hidden waterfalls. As evening falls, the mountain air cools, inviting you to gather, reflect, and simply be. This is not a vacation rental; it is a return to authentic living."
                             </p>
                             <div className="grid grid-cols-2 gap-24 h-[45vh]">
-                                <div className="overflow-hidden rounded-sm group"><img src="./images/3K6D5872.JPG" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" /></div>
+                                <div className="overflow-hidden rounded-sm group relative cursor-pointer" onClick={() => setLightboxOpen(13)}>
+                                    <img src="./images/3K6D5872.JPG" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+                                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500"><div className="bg-brand-dark/60 text-white p-6 rounded-full backdrop-blur-sm"><i data-lucide="maximize-2" className="w-10 h-10"></i></div></div>
+                                </div>
                                 <div className="bg-brand-green text-white p-10 flex flex-col justify-center items-center text-center rounded-sm">
                                     <i data-lucide="moon" className="w-16 h-16 mb-8 text-brand-gold"></i>
                                     <p className="font-serif text-3xl">Embrace the Night.</p>
@@ -471,7 +499,7 @@
             
             return (
                 <div className="bg-brand-cream min-h-screen fade-enter">
-                    {(lightboxOpen === true || typeof lightboxOpen === "number") && <MasonryGallery images={data.gallery || data.fullGallery || []} onClose={() => setLightboxOpen(false)} initialIndex={typeof lightboxOpen === "number" ? lightboxOpen : null} />}
+                    {(lightboxOpen === true || typeof lightboxOpen === "number") && <MasonryGallery images={data.fullGallery || data.gallery || []} onClose={() => setLightboxOpen(false)} initialIndex={typeof lightboxOpen === "number" ? lightboxOpen : null} />}
                     
                     <div className="h-[85vh] relative">
                         <SafeImage src={data.cover} alt={data.name} queryTerm={data.query || data.name} className="w-full h-full object-cover" />
