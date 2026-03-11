@@ -40,13 +40,13 @@
         .hide-scroll::-webkit-scrollbar { display: none; }
         
         /* Elite Animations */
-        .fade-enter { animation: fadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .fade-enter { animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .reveal-on-scroll {
             opacity: 0;
             transform: translateY(40px);
-            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .reveal-on-scroll.animate-reveal { opacity: 1; transform: translateY(0); }
 
@@ -101,8 +101,8 @@
             );
         };
 
-        // --- INTELLIGENT SAFE IMAGE WITH API BLEND ---
-        const SafeImage = ({ src, alt, className, queryTerm = "tanzania nature", onClick }) => {
+        // --- INTELLIGENT SAFE IMAGE ---
+        const SafeImage = ({ src, alt, className, queryTerm = "tanzania nature" }) => {
             const [imgSrc, setImgSrc] = useState(src || `https://source.unsplash.com/random/800x600/?${encodeURIComponent(queryTerm)}`);
 
             const fetchReplacement = () => {
@@ -116,7 +116,7 @@
                 if (!src) fetchReplacement();
             }, [src]);
 
-            return <img src={imgSrc} alt={alt} className={className} onError={fetchReplacement} loading="lazy" onClick={onClick} />;
+            return <img src={imgSrc} alt={alt} className={className} onError={fetchReplacement} loading="lazy" />;
         };
 
         // --- ELITE DATA SECTION ---
@@ -150,10 +150,10 @@
                 cover: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=1600",
                 gallery: ["https://images.unsplash.com/photo-1535941339077-2dd1c7963098?w=800", "https://images.unsplash.com/photo-1547471080-7528185270d2?w=800", "https://images.unsplash.com/photo-1518599818837-1419a4059082?w=800", "https://images.unsplash.com/photo-1614027164847-1b28cfe1df60?w=800"],
                 details: [
-                    { title: "Day 1: Arrival at the Plains", desc: "Touch down in the heart of the wild. Your private guide awaits to transfer you to your luxury tented camp. An afternoon game drive introduces you to the vastness of the plains." }, 
-                    { title: "Day 2: The Great Migration Trail", desc: "A full day dedicated to tracking the herds. Depending on the season, witness the dramatic river crossings or the calving season in the southern plains." },
+                    { title: "Day 1: Arrival at the Plains", desc: "Touch down in the heart of the wild. Your private guide awaits to transfer you to your luxury tented camp." }, 
+                    { title: "Day 2: The Great Migration Trail", desc: "A full day dedicated to tracking the herds. Depending on the season, witness the dramatic river crossings or the calving season." },
                     { title: "Day 3: Predators of the Serengeti", desc: "Focus on the apex predators. We navigate the Kopjes where prides of lions rest, and scan the acacia trees for the elusive leopard." },
-                    { title: "Day 4: Dawn Balloon Safari", desc: "Lift off at sunrise in a hot air balloon, drifting silently over the awakening savannah, followed by a champagne breakfast in the bush." }
+                    { title: "Day 4: Dawn Balloon Safari", desc: "Lift off at sunrise in a hot air balloon, drifting silently over the awakening savannah, followed by a champagne breakfast." }
                 ],
                 desc: "Where the earth breathes. Witness the greatest show on earth, guided by native experts who read the tracks like a book."
             },
@@ -163,10 +163,10 @@
                 cover: "https://images.unsplash.com/photo-1650638525049-c294101d2482?w=1600",
                 gallery: ["https://images.unsplash.com/photo-1589553416260-f586c8f1514f?w=800", "https://images.unsplash.com/photo-1632756314605-1a8508e602be?w=800", "https://images.unsplash.com/photo-1605553147575-4089c20a9a4b?w=800", "https://images.unsplash.com/photo-1609198092458-38a293c7ac4b?w=800"],
                 details: [
-                    { title: "Day 1: The Rainforest Canopy", desc: "Begin the ascent through dense, mist-shrouded rainforest. Listen for blue monkeys and colorful turacos as you climb to the first camp." }, 
-                    { title: "Day 3: The Moorland Plateau", desc: "Emerge from the forest into the expansive moorlands. The air thins as you hike past giant lobelias and groundsels, taking in the first clear views of the summit." },
-                    { title: "Day 5: Alpine Desert Acclimatization", desc: "Trek across the surreal, lunar-like landscape of the Saddle. We employ the 'climb high, sleep low' strategy to prepare your body for the final push." },
-                    { title: "Day 7: The Uhuru Peak Summit", desc: "A midnight departure under a blanket of stars. You will reach the crater rim by dawn, watching the sunrise over Africa from 5,895 meters above sea level." }
+                    { title: "Day 1: The Rainforest Canopy", desc: "Begin the ascent through dense, mist-shrouded rainforest. Listen for blue monkeys and colorful turacos as you climb." }, 
+                    { title: "Day 3: The Moorland Plateau", desc: "Emerge from the forest into the expansive moorlands. The air thins as you hike past giant lobelias and groundsels." },
+                    { title: "Day 5: Alpine Desert", desc: "Trek across the surreal, lunar-like landscape of the Saddle. We employ the 'climb high, sleep low' strategy." },
+                    { title: "Day 7: The Uhuru Peak Summit", desc: "A midnight departure under a blanket of stars. You will reach the crater rim by dawn, watching the sunrise over Africa." }
                 ],
                 desc: "More than a climb. It's a spiritual journey to the top of the continent, supported by our elite team of Chagga guides and porters."
             }
@@ -180,11 +180,11 @@
                 gallery: ["https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=800", "https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=800", "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800", "https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=800"],
                 tagline: "Teach. Learn. Exchange.",
                 details: [
-                    { title: "Phase 1: Cultural Immersion", desc: "Spend your first days living with the community. Learn basic Maa phrasing, understand the pastoralist lifestyle, and build trust with the village elders." },
-                    { title: "Phase 2: Classroom Integration", desc: "Partner with local teachers. You will assist in English and Mathematics fundamentals for children aged 6-12, bringing new perspectives and interactive learning methods." },
-                    { title: "Phase 3: Legacy Building", desc: "Beyond teaching, help construct sustainable school infrastructure, paint classrooms, or set up solar reading lights to ensure your impact outlasts your stay." }
+                    { title: "Phase 1: Cultural Immersion", desc: "Spend your first days living with the community. Learn basic Maa phrasing, understand the pastoralist lifestyle, and build trust." },
+                    { title: "Phase 2: Classroom Integration", desc: "Partner with local teachers. You will assist in English and Mathematics fundamentals for children aged 6-12." },
+                    { title: "Phase 3: Legacy Building", desc: "Beyond teaching, help construct sustainable school infrastructure, paint classrooms, or set up solar reading lights." }
                 ],
-                desc: "Don't just watch the culture through a safari window; become part of the village's future. This initiative empowers the next generation of Maasai youth while preserving their profound heritage."
+                desc: "Don't just watch the culture through a safari window; become part of the village's future. This initiative empowers the next generation."
             }
         ];
 
@@ -219,36 +219,49 @@
                 return () => { window.removeEventListener('keydown', handleKeyDown); document.body.style.overflow = 'auto'; };
             }, [onClose, selectedIndex, images.length]);
 
-            // Single Image Lightbox Mode
+            // Re-render icons when switching views to ensure nav buttons show up
+            useEffect(() => {
+                lucide.createIcons();
+            }, [selectedIndex]);
+
+            // SINGLE IMAGE LIGHTBOX MODE
             if (selectedIndex !== null) {
                 return (
-                    <div className="fixed inset-0 z-[300] bg-black flex items-center justify-center fade-enter" onClick={() => setSelectedIndex(null)}>
-                        <button type="button" onClick={(e) => { e.stopPropagation(); setSelectedIndex(null); }} className="absolute top-8 right-8 text-white/70 hover:text-white transition-colors z-50 bg-black/50 p-3 rounded-full">
-                            <i data-lucide="x" className="w-8 h-8"></i>
+                    <div className="fixed inset-0 z-[500] bg-brand-dark/95 backdrop-blur-3xl flex flex-col items-center justify-center fade-enter" onClick={() => setSelectedIndex(null)}>
+                        {/* Top Navbar */}
+                        <div className="absolute top-0 left-0 right-0 h-24 flex items-center justify-between px-6 md:px-12 z-50 bg-gradient-to-b from-black/80 to-transparent">
+                            <div className="text-brand-gold font-serif text-lg md:text-xl tracking-[0.2em] uppercase">The Sanctuary Vault</div>
+                            <button type="button" onClick={(e) => { e.stopPropagation(); setSelectedIndex(null); }} className="text-white/70 hover:text-white transition-colors bg-white/10 hover:bg-white/20 p-4 rounded-full backdrop-blur-md">
+                                <i data-lucide="x" className="w-6 h-6"></i>
+                            </button>
+                        </div>
+                        
+                        {/* Left Arrow */}
+                        <button type="button" onClick={(e) => { e.stopPropagation(); setSelectedIndex(prev => (prev === 0 ? images.length - 1 : prev - 1)); }} className="absolute left-2 md:left-8 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors z-50 p-4 bg-black/20 hover:bg-black/60 rounded-full">
+                            <i data-lucide="chevron-left" className="w-8 h-8 md:w-10 md:h-10"></i>
                         </button>
                         
-                        <button type="button" onClick={(e) => { e.stopPropagation(); setSelectedIndex(prev => (prev === 0 ? images.length - 1 : prev - 1)); }} className="absolute left-4 md:left-12 text-white/50 hover:text-white transition-colors z-50 p-4 bg-black/20 hover:bg-black/50 rounded-full">
-                            <i data-lucide="chevron-left" className="w-10 h-10"></i>
-                        </button>
-                        
-                        <div className="relative max-w-7xl max-h-screen p-4 flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
-                            <img src={images[selectedIndex]} alt="Gallery Image" className="max-w-full max-h-[90vh] object-contain shadow-2xl" />
+                        {/* Center Image */}
+                        <div className="relative w-full max-w-7xl h-full max-h-[85vh] p-4 flex items-center justify-center mt-12" onClick={(e) => e.stopPropagation()}>
+                            <img src={images[selectedIndex]} alt={`Gallery View ${selectedIndex}`} className="max-w-full max-h-full object-contain shadow-2xl rounded-sm transition-opacity duration-500" />
                         </div>
 
-                        <button type="button" onClick={(e) => { e.stopPropagation(); setSelectedIndex(prev => (prev + 1) % images.length); }} className="absolute right-4 md:right-12 text-white/50 hover:text-white transition-colors z-50 p-4 bg-black/20 hover:bg-black/50 rounded-full">
-                            <i data-lucide="chevron-right" className="w-10 h-10"></i>
+                        {/* Right Arrow */}
+                        <button type="button" onClick={(e) => { e.stopPropagation(); setSelectedIndex(prev => (prev + 1) % images.length); }} className="absolute right-2 md:right-8 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors z-50 p-4 bg-black/20 hover:bg-black/60 rounded-full">
+                            <i data-lucide="chevron-right" className="w-8 h-8 md:w-10 md:h-10"></i>
                         </button>
 
-                        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/70 tracking-[0.2em] font-serif text-lg bg-black/50 px-6 py-2 rounded-full">
+                        {/* Counter */}
+                        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-brand-gold tracking-[0.3em] font-sans text-sm font-bold bg-black/60 px-8 py-3 rounded-full border border-white/10 shadow-xl">
                             {selectedIndex + 1} / {images.length}
                         </div>
                     </div>
                 );
             }
 
-            // Masonry Vault Mode
+            // FULL MASONRY VAULT MODE
             return (
-                <div className="fixed inset-0 z-[100] bg-brand-dark/95 backdrop-blur-2xl overflow-y-auto fade-enter">
+                <div className="fixed inset-0 z-[400] bg-brand-dark/95 backdrop-blur-2xl overflow-y-auto fade-enter">
                     <div className="sticky top-0 left-0 right-0 h-24 bg-gradient-to-b from-brand-dark to-transparent flex items-center justify-between px-8 z-50">
                         <div className="text-white font-serif text-2xl tracking-widest uppercase text-brand-gold">The Sanctuary Vault</div>
                         <button type="button" onClick={onClose} className="text-white/70 hover:text-white transition-colors bg-white/10 hover:bg-white/20 p-4 rounded-full backdrop-blur-md border border-white/20">
@@ -262,7 +275,7 @@
                                     <SafeImage src={src} alt={`Vault Image ${index + 1}`} className="w-full h-auto object-cover opacity-90 group-hover:opacity-100 transition-transform duration-1000 group-hover:scale-[1.03]" />
                                     <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500"></div>
                                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                                        <i data-lucide="maximize-2" className="w-10 h-10 text-white drop-shadow-md"></i>
+                                        <div className="bg-brand-dark/60 text-white p-4 rounded-full backdrop-blur-sm"><i data-lucide="maximize-2" className="w-8 h-8"></i></div>
                                     </div>
                                 </div>
                             ))}
@@ -272,19 +285,24 @@
             );
         };
 
-        // 2. Global UseScroll Reveal Hook
+        // 2. Global UseScroll Reveal Hook (Fixed Blank Page Bug)
         const useScrollReveal = (deps = []) => {
             useEffect(() => {
                 const timer = setTimeout(() => {
-                    const observer = new IntersectionObserver((entries) => {
+                    const observer = new IntersectionObserver((entries, obs) => {
                         entries.forEach(entry => {
-                            if (entry.isIntersecting) entry.target.classList.add('animate-reveal');
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('animate-reveal');
+                                obs.unobserve(entry.target); // Performance boost: stop observing once revealed
+                            }
                         });
                     }, { threshold: 0.1 });
+                    
                     document.querySelectorAll('.reveal-on-scroll').forEach(el => {
-                        el.classList.remove('animate-reveal'); // Reset for perfect re-mounting
+                        el.classList.remove('animate-reveal'); // Reset completely
                         observer.observe(el);
                     });
+                    
                     return () => observer.disconnect();
                 }, 100);
                 return () => clearTimeout(timer);
@@ -298,7 +316,7 @@
 
             return (
                 <div className="bg-brand-cream min-h-screen fade-enter font-sans text-gray-800">
-                    {lightboxOpen && <MasonryGallery images={data.fullGallery || data.gallery || []} onClose={() => { setLightboxOpen(false); lucide.createIcons(); }} />}
+                    {lightboxOpen && <MasonryGallery images={data.fullGallery || data.gallery || []} onClose={() => setLightboxOpen(false)} />}
                     
                     <div className="h-screen relative flex items-center justify-center overflow-hidden">
                         <img src="./KIRUA/3K6D5655.JPG" alt="The Kirua Homestead" className="absolute inset-0 w-full h-full object-cover" />
@@ -338,7 +356,7 @@
                         </div>
                     </div>
 
-                    {/* CORRECTED IMAGE FOR THE SPACE (3K6D5610.JPG) */}
+                    {/* FIXED: Parallax Image for The Space is now 3K6D5610.JPG */}
                     <div className="w-full h-[80vh] relative overflow-hidden my-12 bg-fixed bg-center bg-cover" style={{ backgroundImage: "url('./KIRUA/3K6D5610.JPG')" }}></div>
 
                     <div className="container mx-auto px-6 py-32 grid grid-cols-1 lg:grid-cols-2 gap-24 items-start reveal-on-scroll">
@@ -380,7 +398,7 @@
 
             return (
                 <div className="bg-brand-cream min-h-screen fade-enter font-sans text-gray-800">
-                    {lightboxOpen && <MasonryGallery images={data.fullGallery || data.gallery || []} onClose={() => { setLightboxOpen(false); lucide.createIcons(); }} />}
+                    {lightboxOpen && <MasonryGallery images={data.fullGallery || data.gallery || []} onClose={() => setLightboxOpen(false)} />}
                     
                     <div className="h-screen relative flex items-center justify-center overflow-hidden">
                         <img src="./images/3K6D5851.JPG" alt="The Marangu Sanctuary" className="absolute inset-0 w-full h-full object-cover" />
@@ -461,7 +479,7 @@
             
             return (
                 <div className="bg-brand-cream min-h-screen fade-enter">
-                    {lightboxOpen && <MasonryGallery images={data.gallery || data.fullGallery || []} onClose={() => { setLightboxOpen(false); lucide.createIcons(); }} />}
+                    {lightboxOpen && <MasonryGallery images={data.gallery || data.fullGallery || []} onClose={() => setLightboxOpen(false)} />}
                     
                     <div className="h-[80vh] relative">
                         <SafeImage src={data.cover} alt={data.name} queryTerm={data.query || data.name} className="w-full h-full object-cover" />
@@ -541,11 +559,17 @@
             const handleSelect = (item) => { setActiveData(item); setView('detail'); };
             const handleBook = (item) => { setModalItem(item); setModalOpen(true); };
             const openKirua = () => { handleSelect(stays.find(s => s.id === 'kirua-homestead')); };
+            
+            // Flawless Back Button Action
+            const handleBackToHome = () => {
+                setView('home');
+                setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
+            };
 
             return (
                 <div className="antialiased text-gray-800 font-sans">
                     {/* Fullscreen Neighbourhood Gallery Injection */}
-                    {nhGalleryOpen && <MasonryGallery images={neighbourhoodImages} onClose={() => { setNhGalleryOpen(false); lucide.createIcons(); }} />}
+                    {nhGalleryOpen && <MasonryGallery images={neighbourhoodImages} onClose={() => setNhGalleryOpen(false)} />}
 
                     {view === 'home' ? (
                         <div className="fade-enter">
@@ -627,29 +651,30 @@
 
                                 {/* NEW: Elite Bento Grid for Neighbourhood Images */}
                                 <div className="container mx-auto px-6 max-w-7xl reveal-on-scroll">
-                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 h-[80vh]">
+                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 h-auto md:h-[80vh]">
                                         {/* Img 1: Large Left */}
-                                        <div onClick={() => setNhGalleryOpen(true)} className="md:col-span-2 md:row-span-2 overflow-hidden rounded-sm group relative cursor-pointer shadow-2xl">
+                                        <div onClick={() => setNhGalleryOpen(true)} className="h-[40vh] md:h-auto md:col-span-2 md:row-span-2 overflow-hidden rounded-sm group relative cursor-pointer shadow-2xl">
                                             <img src="./KIRUA/3K6D5636.JPG" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Neighbourhood 1" />
                                             <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+                                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500"><div className="bg-brand-dark/60 text-white p-4 rounded-full backdrop-blur-sm"><i data-lucide="maximize-2" className="w-8 h-8"></i></div></div>
                                         </div>
                                         {/* Img 2: Top Right Wide */}
-                                        <div onClick={() => setNhGalleryOpen(true)} className="md:col-span-2 md:row-span-1 overflow-hidden rounded-sm group relative cursor-pointer shadow-lg">
+                                        <div onClick={() => setNhGalleryOpen(true)} className="h-[30vh] md:h-auto md:col-span-2 md:row-span-1 overflow-hidden rounded-sm group relative cursor-pointer shadow-lg">
                                             <img src="./KIRUA/3K6D5644.JPG" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Neighbourhood 2" />
                                             <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
                                         </div>
                                         {/* Img 3: Bottom Middle */}
-                                        <div onClick={() => setNhGalleryOpen(true)} className="md:col-span-1 md:row-span-1 overflow-hidden rounded-sm group relative cursor-pointer shadow-lg">
+                                        <div onClick={() => setNhGalleryOpen(true)} className="h-[30vh] md:h-auto md:col-span-1 md:row-span-1 overflow-hidden rounded-sm group relative cursor-pointer shadow-lg">
                                             <img src="./KIRUA/3K6D5642.JPG" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Neighbourhood 3" />
                                             <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
                                         </div>
                                         {/* Img 4: Bottom Right */}
-                                        <div onClick={() => setNhGalleryOpen(true)} className="md:col-span-1 md:row-span-1 overflow-hidden rounded-sm group relative cursor-pointer shadow-lg">
+                                        <div onClick={() => setNhGalleryOpen(true)} className="h-[30vh] md:h-auto md:col-span-1 md:row-span-1 overflow-hidden rounded-sm group relative cursor-pointer shadow-lg">
                                             <img src="./KIRUA/3K6D5639.JPG" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Neighbourhood 4" />
                                             <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
                                         </div>
                                     </div>
-                                    {/* Explore Button for 5th Image & All */}
+                                    {/* Explore Button for all 5 images */}
                                     <div className="text-center mt-12">
                                         <button type="button" onClick={() => setNhGalleryOpen(true)} className="text-brand-gold hover:text-white transition-colors font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 w-full">
                                             <i data-lucide="grid" className="w-4 h-4"></i> View Neighbourhood Gallery
@@ -707,11 +732,11 @@
                             </div>
                         </div>
                     ) : activeData && activeData.id === 'kirua-homestead' ? (
-                        <KiruaDetailView data={activeData} onBack={() => setView('home')} onBook={handleBook} />
+                        <KiruaDetailView data={activeData} onBack={handleBackToHome} onBook={handleBook} />
                     ) : activeData && activeData.id === 'marangu-sanctuary' ? (
-                        <MaranguDetailView data={activeData} onBack={() => setView('home')} onBook={handleBook} />
+                        <MaranguDetailView data={activeData} onBack={handleBackToHome} onBook={handleBook} />
                     ) : (
-                        <DetailView data={activeData} onBack={() => setView('home')} onBook={handleBook} />
+                        <DetailView data={activeData} onBack={handleBackToHome} onBook={handleBook} />
                     )}
 
                     <footer className="bg-black text-white py-24 text-center">
@@ -721,7 +746,7 @@
                     </footer>
 
                     {modalOpen && (
-                        <div className="fixed inset-0 z-[400] flex items-center justify-center p-4 bg-brand-dark/95 backdrop-blur-xl fade-enter" onClick={() => setModalOpen(false)}>
+                        <div className="fixed inset-0 z-[600] flex items-center justify-center p-4 bg-brand-dark/95 backdrop-blur-xl fade-enter" onClick={() => setModalOpen(false)}>
                             <div className="bg-white w-full max-w-2xl rounded-sm p-12 md:p-16 relative" onClick={e => e.stopPropagation()}>
                                 <button type="button" onClick={() => setModalOpen(false)} className="absolute top-8 right-8 text-gray-400 hover:text-brand-dark transition-colors"><i data-lucide="x" className="w-8 h-8"></i></button>
                                 <h3 className="text-4xl font-serif text-brand-dark mb-2">{modalItem.id === 'kirua-homestead' ? "Karibu Nyumbani" : "Begin Your Journey"}</h3>
