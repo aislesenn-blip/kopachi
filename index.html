@@ -36,7 +36,14 @@
         }
     </script>
     <style>
-        body { background-color: #F5F5F0; overflow-x: hidden; scroll-behavior: smooth; }
+        html, body {
+            background-color: #F5F5F0;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            max-width: 100vw;
+            margin: 0;
+            padding: 0;
+        }
         .hide-scroll::-webkit-scrollbar { display: none; }
         
         /* Elite Animations */
@@ -122,13 +129,13 @@
         // --- ELITE DATA SECTION ---
         const stays = [
             {
-                id: 'kirua-homestead', type: 'stay', name: "The Kopachi Homestead",
+                id: 'kirua-homestead', type: 'stay', name: "The Kopachi-Kirua Homestead",
                 tagline: "Don't Visit. Just Live.", location: "Kirua, Kilimanjaro", price: "$120/night",
                 cover: "./KIRUA/3K6D5655.JPG",
                 gallery: ["./KIRUA/3K6D5655.JPG", "./KIRUA/3K6D5582.JPG", "./KIRUA/3K6D5585.JPG", "./KIRUA/3K6D5588.JPG", "./KIRUA/3K6D5597.JPG"],
                 fullGallery: [
-                    "./KIRUA/3K6D5582.JPG", "./KIRUA/3K6D5585.JPG", "./KIRUA/3K6D5588.JPG", "./KIRUA/3K6D5597.JPG", "./KIRUA/3K6D5600.JPG", 
-                    "./KIRUA/3K6D5601.JPG", "./KIRUA/3K6D5607.JPG", "./KIRUA/3K6D5610.JPG", "./KIRUA/3K6D5615.JPG", "./KIRUA/3K6D5620.JPG"
+                    "./KIRUA/3K6D5655.JPG", "./KIRUA/3K6D5582.JPG", "./KIRUA/3K6D5585.JPG", "./KIRUA/3K6D5588.JPG", "./KIRUA/3K6D5597.JPG", "./KIRUA/3K6D5600.JPG",
+                    "./KIRUA/3K6D5601.JPG", "./KIRUA/3K6D5607.JPG", "./KIRUA/3K6D5610.JPG", "./KIRUA/3K6D5615.JPG", "./KIRUA/3K6D5620.JPG", "./KIRUA/3K6D5626.JPG"
                 ]
             },
             {
@@ -137,8 +144,8 @@
                 cover: "./images/3K6D5851.JPG",
                 gallery: ["./images/3K6D5851.JPG", "./images/3K6D5858.JPG", "./images/3K6D5864.JPG", "./images/3K6D5868.JPG", "./images/3K6D5872.JPG"],
                 fullGallery: [
-                    "./images/3K6D5825.JPG", "./images/3K6D5829.JPG", "./images/3K6D5830.JPG", "./images/3K6D5833.JPG", "./images/3K6D5837.JPG",
-                    "./images/3K6D5841.JPG", "./images/3K6D5844.JPG", "./images/3K6D5848.JPG", "./images/3K6D5851.JPG", "./images/3K6D5853.JPG"
+                    "./images/3K6D5851.JPG", "./images/3K6D5825.JPG", "./images/3K6D5829.JPG", "./images/3K6D5830.JPG", "./images/3K6D5833.JPG", "./images/3K6D5837.JPG",
+                    "./images/3K6D5841.JPG", "./images/3K6D5844.JPG", "./images/3K6D5848.JPG", "./images/3K6D5853.JPG", "./images/3K6D5858.JPG", "./images/3K6D5864.JPG", "./images/3K6D5868.JPG", "./images/3K6D5872.JPG"
                 ]
             }
         ];
@@ -301,7 +308,7 @@
                     {(lightboxOpen === true || typeof lightboxOpen === 'number') && <MasonryGallery images={images} initialIndex={typeof lightboxOpen === 'number' ? lightboxOpen : 0} onClose={() => setLightboxOpen(false)} />}
                     
                     <div className="h-screen relative flex items-center justify-center overflow-hidden">
-                        <img src="./KIRUA/3K6D5655.JPG" alt="The Kopachi Homestead" className="absolute inset-0 w-full h-full object-cover" />
+                        <img src="./KIRUA/3K6D5655.JPG" alt="The Kopachi-Kirua Homestead" className="absolute inset-0 w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-black/40"></div>
                         <button type="button" onClick={onBack} className="absolute top-8 left-8 bg-white/10 backdrop-blur-md text-white px-6 py-2 rounded-full flex items-center gap-2 hover:bg-white hover:text-black transition-all z-20 border border-white/20"><i data-lucide="arrow-left" className="w-5 h-5"></i> Back</button>
                         <button type="button" onClick={() => setLightboxOpen(0)} className="absolute top-8 right-8 bg-white/10 backdrop-blur-md text-white px-8 py-3 rounded-full flex items-center gap-3 hover:bg-brand-gold hover:border-brand-gold hover:text-black transition-all z-20 border border-white/20 font-serif text-lg shadow-2xl"><i data-lucide="image" className="w-5 h-5"></i> Explore the Homestead</button>
@@ -325,7 +332,7 @@
                                 <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
                                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500"><div className="bg-brand-dark/60 text-white p-4 rounded-full backdrop-blur-sm"><i data-lucide="maximize-2" className="w-8 h-8"></i></div></div>
                             </div>
-                            <div onClick={() => setLightboxOpen(0)} className="w-full h-[50vh] md:h-[70vh] md:ml-12 md:mt-24 reveal-on-scroll overflow-hidden rounded-sm group relative cursor-pointer" style={{ transitionDelay: '0.2s' }}>
+                            <div onClick={() => setLightboxOpen(images.indexOf("./KIRUA/3K6D5626.JPG") !== -1 ? images.indexOf("./KIRUA/3K6D5626.JPG") : 0)} className="w-full h-[50vh] md:h-[70vh] md:ml-12 md:mt-24 reveal-on-scroll overflow-hidden rounded-sm group relative cursor-pointer" style={{ transitionDelay: '0.2s' }}>
                                 <img src="./KIRUA/3K6D5626.JPG" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
                                 <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
                                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500"><div className="bg-brand-dark/60 text-white p-4 rounded-full backdrop-blur-sm"><i data-lucide="maximize-2" className="w-8 h-8"></i></div></div>
@@ -343,7 +350,14 @@
                     </div>
 
                     {/* FIXED: Parallax Image for The Space is now 3K6D5610.JPG */}
-                    <div className="w-full h-[80vh] relative overflow-hidden my-12 bg-fixed bg-center bg-cover" style={{ backgroundImage: "url('./KIRUA/3K6D5610.JPG')" }}></div>
+                    <div onClick={() => setLightboxOpen(images.indexOf("./KIRUA/3K6D5610.JPG") !== -1 ? images.indexOf("./KIRUA/3K6D5610.JPG") : 0)} className="w-full h-[80vh] relative overflow-hidden my-12 bg-fixed bg-center bg-cover group cursor-pointer" style={{ backgroundImage: "url('./KIRUA/3K6D5610.JPG')" }}>
+                        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-700"></div>
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                            <div className="bg-brand-dark/60 text-white p-6 rounded-full backdrop-blur-md shadow-2xl">
+                                <i data-lucide="maximize-2" className="w-10 h-10"></i>
+                            </div>
+                        </div>
+                    </div>
 
                     <div className="container mx-auto px-6 py-32 grid grid-cols-1 lg:grid-cols-2 gap-24 items-start reveal-on-scroll">
                         <div>
@@ -366,7 +380,7 @@
 
                         <div className="lg:sticky lg:top-24 bg-white p-12 md:p-16 rounded-sm shadow-2xl border border-gray-100 w-full">
                             <h3 className="text-4xl md:text-5xl font-serif text-brand-dark mb-6">Don't Visit. Just Live.</h3>
-                            <p className="text-gray-500 mb-12 text-xl font-light">Secure your stay in the Kopachi Homestead. Traditional Chagga warmth meets modern luxury.</p>
+                            <p className="text-gray-500 mb-12 text-xl font-light">Secure your stay in the Kopachi-Kirua Homestead. Traditional Chagga warmth meets modern luxury.</p>
                             <button type="button" onClick={() => onBook(data)} className="w-full bg-brand-dark text-brand-gold py-6 font-serif text-2xl tracking-wider hover:bg-brand-gold hover:text-brand-dark transition-colors shadow-lg flex justify-center items-center gap-3">
                                 Check Availability <i data-lucide="arrow-right" className="w-6 h-6"></i>
                             </button>
@@ -417,7 +431,7 @@
                                 <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
                                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500"><div className="bg-brand-dark/60 text-white p-4 rounded-full backdrop-blur-sm"><i data-lucide="maximize-2" className="w-8 h-8"></i></div></div>
                             </div>
-                            <div onClick={() => setLightboxOpen(0)} className="w-full h-[50vh] md:h-[70vh] md:ml-12 md:mt-24 reveal-on-scroll overflow-hidden rounded-sm group relative cursor-pointer" style={{ transitionDelay: '0.2s' }}>
+                            <div onClick={() => setLightboxOpen(images.indexOf("./images/3K6D5864.JPG") !== -1 ? images.indexOf("./images/3K6D5864.JPG") : 0)} className="w-full h-[50vh] md:h-[70vh] md:ml-12 md:mt-24 reveal-on-scroll overflow-hidden rounded-sm group relative cursor-pointer" style={{ transitionDelay: '0.2s' }}>
                                 <img src="./images/3K6D5864.JPG" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
                                 <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
                                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500"><div className="bg-brand-dark/60 text-white p-4 rounded-full backdrop-blur-sm"><i data-lucide="maximize-2" className="w-8 h-8"></i></div></div>
@@ -434,7 +448,14 @@
                         </div>
                     </div>
 
-                    <div className="w-full h-[80vh] relative overflow-hidden my-12 bg-fixed bg-center bg-cover" style={{ backgroundImage: "url('./images/3K6D5868.JPG')" }}></div>
+                    <div onClick={() => setLightboxOpen(images.indexOf("./images/3K6D5868.JPG") !== -1 ? images.indexOf("./images/3K6D5868.JPG") : 0)} className="w-full h-[80vh] relative overflow-hidden my-12 bg-fixed bg-center bg-cover group cursor-pointer" style={{ backgroundImage: "url('./images/3K6D5868.JPG')" }}>
+                        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-700"></div>
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                            <div className="bg-brand-dark/60 text-white p-6 rounded-full backdrop-blur-md shadow-2xl">
+                                <i data-lucide="maximize-2" className="w-10 h-10"></i>
+                            </div>
+                        </div>
+                    </div>
 
                     <div className="container mx-auto px-6 py-32 grid grid-cols-1 lg:grid-cols-2 gap-24 items-start reveal-on-scroll">
                         <div>
