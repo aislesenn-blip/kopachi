@@ -81,24 +81,26 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
+        // --- UNSPLASH KEY ---
+        const UNSPLASH_ACCESS_KEY = "GFRGVmxF64zpxZL22-o3BaVyGxphiGAwXLMfQxLCC2U";
+
         // --- SMART HERO COMPONENT ---
         const SmartHero = ({ children }) => {
-            const [bgImage, setBgImage] = useState("./images/3K6D5851.JPG"); // Secure local default
-            const [imgError, setImgError] = useState(false);
+            const [bgImage, setBgImage] = useState("https://images.unsplash.com/photo-1516426122078-c23e76319801?w=1600");
 
             const handleImageError = () => {
-                setImgError(true);
+                fetch(`https://api.unsplash.com/photos/random?query=tanzania%20sunrise%20landscape&orientation=landscape&client_id=${UNSPLASH_ACCESS_KEY}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data && data.urls && data.urls.regular) setBgImage(data.urls.regular);
+                        else setBgImage("https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Kilimanjaro_Mount.jpg/1280px-Kilimanjaro_Mount.jpg");
+                    })
+                    .catch(() => setBgImage("https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Kilimanjaro_Mount.jpg/1280px-Kilimanjaro_Mount.jpg"));
             };
 
             return (
-                <div className="relative h-screen flex items-center justify-center overflow-hidden bg-brand-dark">
-                    {!imgError ? (
-                        <img src={bgImage} className="absolute inset-0 w-full h-full object-cover scale-105" alt="Kopachi Sunrise" onError={handleImageError} />
-                    ) : (
-                        <div className="absolute inset-0 flex items-center justify-center bg-brand-dark opacity-50">
-                            <i data-lucide="mountain" className="w-32 h-32 text-brand-gold opacity-20"></i>
-                        </div>
-                    )}
+                <div className="relative h-screen flex items-center justify-center overflow-hidden">
+                    <img src={bgImage} className="absolute inset-0 w-full h-full object-cover scale-105" alt="Kopachi Sunrise" onError={handleImageError} />
                     <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/60 z-10"></div>
                     <div className="relative z-20 w-full px-4">{children}</div>
                     <div className="absolute bottom-10 animate-bounce text-white/70 z-20 left-1/2 transform -translate-x-1/2 cursor-pointer hover:text-white transition-colors" onClick={() => document.getElementById('manifesto').scrollIntoView({behavior:'smooth'})}>
@@ -109,27 +111,21 @@
         };
 
         // --- INTELLIGENT SAFE IMAGE ---
-        const SafeImage = ({ src, alt, className }) => {
-            const [imgError, setImgError] = useState(false);
+        const SafeImage = ({ src, alt, className, queryTerm = "tanzania nature" }) => {
+            const [imgSrc, setImgSrc] = useState(src || `https://source.unsplash.com/random/800x600/?${encodeURIComponent(queryTerm)}`);
 
-            useEffect(() => {
-                setImgError(!src);
-            }, [src]);
-
-            const handleError = () => {
-                setImgError(true);
+            const fetchReplacement = () => {
+                fetch(`https://api.unsplash.com/photos/random?query=${encodeURIComponent(queryTerm)}&orientation=landscape&client_id=${UNSPLASH_ACCESS_KEY}`)
+                    .then(res => res.json())
+                    .then(data => { if (data && data.urls && data.urls.regular) setImgSrc(data.urls.regular); })
+                    .catch(() => { /* Silent Fail */ });
             };
 
-            if (imgError) {
-                return (
-                    <div className={`flex flex-col items-center justify-center bg-brand-cream border border-gray-100 ${className}`}>
-                        <i data-lucide="image-off" className="w-8 h-8 md:w-12 md:h-12 text-gray-300 mb-2"></i>
-                        <span className="text-gray-400 font-serif text-xs md:text-sm tracking-widest uppercase">Archive Unavailable</span>
-                    </div>
-                );
-            }
+            useEffect(() => {
+                if (!src) fetchReplacement();
+            }, [src]);
 
-            return <img src={src} alt={alt} className={className} onError={handleError} loading="lazy" />;
+            return <img src={imgSrc} alt={alt} className={className} onError={fetchReplacement} loading="lazy" />;
         };
 
         // --- ELITE DATA SECTION ---
