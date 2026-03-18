@@ -1138,19 +1138,19 @@
                                 <button type="button" onClick={() => setModalOpen(false)} className="absolute top-4 right-4 md:top-8 md:right-8 text-gray-400 hover:text-brand-dark transition-colors"><i data-lucide="x" className="w-6 h-6 md:w-8 md:h-8"></i></button>
                                 <h3 className="text-3xl md:text-4xl font-serif text-brand-dark mb-2 pr-8">{modalItem.id === 'kirua-homestead' ? "Karibu Nyumbani" : "Begin Your Journey"}</h3>
                                 <p className="text-brand-earth font-bold mb-6 md:mb-10 text-sm md:text-xl tracking-widest uppercase">{modalItem.name}</p>
-                                <form className="space-y-4 md:space-y-6" onSubmit={(e) => e.preventDefault()}>
-                                    <input type="text" placeholder="Full Name" className="w-full bg-gray-50 border border-gray-200 p-4 md:p-5 rounded-sm focus:outline-none focus:border-brand-gold text-base md:text-lg" />
-                                    <input type="email" placeholder="Email Address" className="w-full bg-gray-50 border border-gray-200 p-4 md:p-5 rounded-sm focus:outline-none focus:border-brand-gold text-base md:text-lg" />
+                                <form action="https://formspree.io/f/xpqykavj" method="POST" className="space-y-4 md:space-y-6">
+                                    <input type="text" name="Full_Name" required placeholder="Full Name" className="w-full bg-gray-50 border border-gray-200 p-4 md:p-5 rounded-sm focus:outline-none focus:border-brand-gold text-base md:text-lg" />
+                                    <input type="email" name="Email" required placeholder="Email Address" className="w-full bg-gray-50 border border-gray-200 p-4 md:p-5 rounded-sm focus:outline-none focus:border-brand-gold text-base md:text-lg" />
                                     {modalItem.id === 'kirua-homestead' ? (
-                                        <select className="w-full bg-gray-50 border border-gray-200 p-4 md:p-5 rounded-sm focus:outline-none focus:border-brand-gold text-base md:text-lg text-gray-600">
+                                        <select name="Stay_Package" className="w-full bg-gray-50 border border-gray-200 p-4 md:p-5 rounded-sm focus:outline-none focus:border-brand-gold text-base md:text-lg text-gray-600">
                                             <option>Short Stay (Less than 1 week)</option>
                                             <option>Long Stay (1 Month+)</option>
                                             <option>Digital Nomad Package</option>
                                         </select>
                                     ) : (
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                                            <input type="date" className="bg-gray-50 border border-gray-200 p-4 md:p-5 rounded-sm text-gray-500 text-base md:text-lg w-full" />
-                                            <input type="number" placeholder="Guests" className="bg-gray-50 border border-gray-200 p-4 md:p-5 rounded-sm text-base md:text-lg w-full" />
+                                            <input type="date" name="Arrival_Date" className="bg-gray-50 border border-gray-200 p-4 md:p-5 rounded-sm text-gray-500 text-base md:text-lg w-full" />
+                                            <input type="number" name="Number_of_Guests" placeholder="Guests" className="bg-gray-50 border border-gray-200 p-4 md:p-5 rounded-sm text-base md:text-lg w-full" />
                                         </div>
                                     )}
                                     <button type="submit" className="w-full bg-brand-dark text-brand-gold py-4 md:py-6 rounded-sm font-serif text-xl md:text-2xl tracking-wider hover:bg-brand-gold hover:text-brand-dark transition-colors mt-2 md:mt-4 shadow-xl">Send Request</button>
